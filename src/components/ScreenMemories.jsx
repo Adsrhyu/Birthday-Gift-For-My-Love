@@ -254,7 +254,7 @@ export default function ScreenMemories({ onNext, onBack }) {
             }}
             className="pulse-gold-btn"
           >
-            <span>Buka Hadiah Kupon 🎟️</span>
+            <span>Lihat Kegiatan Birthday ✨</span>
             <ArrowRight size={18} />
           </button>
         </div>

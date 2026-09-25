@@ -1,103 +1,139 @@
 import React, { useState } from 'react';
-import { ArrowLeft, RotateCcw, CheckCircle2, Ticket } from 'lucide-react';
+import { ArrowLeft, RotateCcw, CheckCircle2, Sparkles, Heart, Gift, Clock } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { romanticSynth } from '../utils/audioSynth';
 
-const INITIAL_VOUCHERS = [
+const DAY_ACTIVITIES = [
   {
-    id: 'meal',
-    title: 'FREE MEAL',
-    subtitle: 'Traktir makan sepuasnya 1x tempat pilihanmu',
-    icon: '🍔',
-    category: 'Kuliner',
-    code: 'GIFT-MEAL-01'
+    id: 'jogging',
+    time: 'Pagi Hari • 06:30 WIB',
+    title: 'Jogging Date',
+    icon: '🏃‍♂️🌿',
+    tag: 'Sehat & Semangat',
+    description: 'Lari pagi santai berdua, menghirup udara segar, dan memulai hari ulang tahunmu dengan penuh energi positif serta langkah ceria.'
+  },
+  {
+    id: 'cooking',
+    time: 'Siang Hari • 11:30 WIB',
+    title: 'Cooking Date',
+    icon: '🍳👩‍🍳',
+    tag: 'Dapur Penuh Tawa',
+    description: 'Masak menu favorit berdua di dapur, saling bantu nyiapin bahan sambil bercanda, lalu makan bersama hasil kreasi masakan kita.'
   },
   {
     id: 'movie',
-    title: 'MOVIE NIGHT',
-    subtitle: 'Nonton film bioskop pilihanmu (tiket + popcorn aku bayarin)',
-    icon: '🎬',
-    category: 'Hiburan',
-    code: 'GIFT-CINE-02'
+    time: 'Sore Hari • 16:00 WIB',
+    title: 'Movie Date',
+    icon: '🎬🍿',
+    tag: 'Santai & Seru',
+    description: 'Nonton film atau series favorit sambil santai berdua, ditemani cemilan lezat, dan menikmati quality time yang hangat serta nyaman.'
   },
   {
-    id: 'wish',
-    title: 'ONE WISH',
-    subtitle: 'Minta 1 permintaan apa saja dariku tanpa ditolak',
-    icon: '✨',
-    category: 'Spesial',
-    code: 'GIFT-WISH-03'
+    id: 'skripsi',
+    time: 'Malam Hari • 19:30 WIB',
+    title: 'Skripsi Date',
+    icon: '📚✍️',
+    tag: 'Full Support & Cinta',
+    description: 'Nemenin dan semangatin kamu ngerjain skripsi dengan penuh cinta, dukungan mental tanpa henti sampai kamu tuntas sidang dan wisuda!'
+  }
+];
+
+const BONUS_REWARDS = [
+  {
+    id: 'massage-bonus',
+    title: 'Bonus Pijatan selama 10 Menit',
+    icon: '💆‍♂️✨',
+    category: 'Relaksasi Spesial',
+    description: 'Pijatan lembut dan relaksasi pundak serta punggung selama 10 menit penuh saat kamu merasa lelah setelah seharian beraktivitas.'
   },
   {
-    id: 'no-arg',
-    title: 'NO ARGUMENT DAY',
-    subtitle: 'Hari bebas debat seharian, kamu selalu menang & selalu benar',
-    icon: '🤫',
-    category: 'Spesial',
-    code: 'GIFT-PEACE-04'
-  },
-  {
-    id: 'massage',
-    title: 'FREE MASSAGE',
-    subtitle: 'Pijat relaksasi pundak/punggung 30 menit kalau capek kerja',
-    icon: '💆‍♂️',
-    category: 'Relaksasi',
-    code: 'GIFT-HEAL-05'
-  },
-  {
-    id: 'game',
-    title: 'GAME TIME',
-    subtitle: 'Bebas push rank/main game seharian tanpa diganggu ngambek',
-    icon: '🎮',
-    category: 'Hiburan',
-    code: 'GIFT-GAME-06'
+    id: 'hug-bonus',
+    title: 'Bonus Pelukan Hangat dari Aku',
+    icon: '🤗❤️',
+    category: 'Unlimited Love',
+    description: 'Pelukan hangat paling tulus, nyaman, dan menenangkan kapanpun kamu butuh tempat bersandar, berlaku selamanya tanpa batas waktu.'
   }
 ];
 
 export default function ScreenVouchers({ onBack, onRestart }) {
-  const [claimedVouchers, setClaimedVouchers] = useState(() => {
+  const [completedActivities, setCompletedActivities] = useState(() => {
     try {
-      const saved = localStorage.getItem('birthday_claimed_vouchers');
+      const saved = localStorage.getItem('birthday_completed_activities');
       return saved ? JSON.parse(saved) : {};
     } catch {
       return {};
     }
   });
 
-  const handleClaim = (voucher) => {
-    if (claimedVouchers[voucher.id]) return;
+  const [claimedBonuses, setClaimedBonuses] = useState(() => {
+    try {
+      const saved = localStorage.getItem('birthday_claimed_bonuses');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const handleToggleActivity = (act) => {
+    romanticSynth.playStampSound();
+    confetti({
+      particleCount: 40,
+      spread: 60,
+      origin: { y: 0.65 },
+      colors: ['#D4AF37', '#F6E27A', '#38BDF8']
+    });
+
+    const isDone = !!completedActivities[act.id];
+    const updated = {
+      ...completedActivities,
+      [act.id]: !isDone
+    };
+
+    setCompletedActivities(updated);
+    try {
+      localStorage.setItem('birthday_completed_activities', JSON.stringify(updated));
+    } catch (e) {
+      console.log('Error saving activity status:', e);
+    }
+  };
+
+  const handleClaimBonus = (bonus) => {
+    if (claimedBonuses[bonus.id]) return;
 
     romanticSynth.playStampSound();
     confetti({
-      particleCount: 45,
-      spread: 60,
+      particleCount: 65,
+      spread: 75,
       origin: { y: 0.7 },
-      colors: ['#D4AF37', '#F6E27A', '#10B981']
+      colors: ['#F6E27A', '#D4AF37', '#EF4444', '#10B981']
     });
 
     const now = new Date();
     const dateStr = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
 
     const updated = {
-      ...claimedVouchers,
-      [voucher.id]: {
+      ...claimedBonuses,
+      [bonus.id]: {
         claimedAt: dateStr,
-        title: voucher.title
+        title: bonus.title
       }
     };
-    setClaimedVouchers(updated);
+
+    setClaimedBonuses(updated);
     try {
-      localStorage.setItem('birthday_claimed_vouchers', JSON.stringify(updated));
+      localStorage.setItem('birthday_claimed_bonuses', JSON.stringify(updated));
     } catch (e) {
-      console.log('Local storage error:', e);
+      console.log('Error saving bonus status:', e);
     }
   };
 
-  const handleResetVouchers = () => {
-    if (window.confirm('Reset semua kupon agar bisa diklaim ulang?')) {
-      setClaimedVouchers({});
+  const handleResetAll = () => {
+    if (window.confirm('Reset status kegiatan dan bonus agar bisa ditandai ulang?')) {
+      setCompletedActivities({});
+      setClaimedBonuses({});
       try {
-        localStorage.removeItem('birthday_claimed_vouchers');
+        localStorage.removeItem('birthday_completed_activities');
+        localStorage.removeItem('birthday_claimed_bonuses');
       } catch {
         // Ignored
       }
@@ -111,7 +147,7 @@ export default function ScreenVouchers({ onBack, onRestart }) {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      padding: '40px 20px 60px 20px',
+      padding: '40px 20px 70px 20px',
       position: 'relative'
     }}>
       <div style={{
@@ -120,208 +156,404 @@ export default function ScreenVouchers({ onBack, onRestart }) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '28px'
+        gap: '32px'
       }}>
-        {/* Header */}
+        {/* Header Title */}
         <div style={{ textAlign: 'center' }}>
           <span style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
             color: 'var(--color-gold-light)',
-            fontSize: '0.85rem',
-            letterSpacing: '2px',
+            fontSize: '0.82rem',
+            letterSpacing: '2.5px',
             textTransform: 'uppercase',
-            fontWeight: '600'
+            fontWeight: '700',
+            background: 'rgba(212, 175, 55, 0.15)',
+            border: '1px solid rgba(246, 226, 122, 0.3)',
+            padding: '5px 14px',
+            borderRadius: '999px',
+            marginBottom: '10px'
           }}>
-            <Ticket size={16} /> Birthday Gifts
+            <Sparkles size={15} /> Rencana Kegiatan Birthday
           </span>
           <h2 style={{
             fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(2.2rem, 5vw, 3.2rem)',
+            fontSize: 'clamp(2.1rem, 5vw, 3.2rem)',
             fontWeight: '800',
             color: 'var(--color-gold)',
-            lineHeight: 1.1,
+            lineHeight: 1.15,
             marginTop: '4px'
           }}>
-            Exclusive Vouchers
+            One Day Birthday Date Plan
           </h2>
-          <p style={{ color: '#CBD5E1', fontSize: '0.95rem', marginTop: '6px', maxWidth: '600px' }}>
-            Kupon cinta yang berlaku selamanya! Ketuk "Klaim" saat ingin menukarkannya atau screenshot sebagai bukti kado ❤️
+          <p style={{
+            color: '#CBD5E1',
+            fontSize: '0.98rem',
+            marginTop: '8px',
+            maxWidth: '640px',
+            lineHeight: 1.6
+          }}>
+            Rangkaian kegiatan manis yang akan kita lakukan berdua seharian penuh spesial di hari ulang tahunmu. Siap untuk menjelajahi hari indah kita? ❤️
           </p>
         </div>
 
-        {/* Voucher Cards Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-          gap: '20px',
-          width: '100%'
-        }}>
-          {INITIAL_VOUCHERS.map((v) => {
-            const isClaimed = !!claimedVouchers[v.id];
+        {/* Section 1: 4 Main Day Activities */}
+        <div style={{ width: '100%' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '18px',
+            borderBottom: '1px solid rgba(212, 175, 55, 0.25)',
+            paddingBottom: '10px'
+          }}>
+            <h3 style={{
+              color: '#FFFFFF',
+              fontSize: '1.15rem',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <Clock size={19} color="var(--color-gold-light)" />
+              <span>Agenda Seharian Kita</span>
+            </h3>
+            <span style={{
+              color: 'var(--color-gold-light)',
+              fontSize: '0.8rem',
+              fontWeight: '600'
+            }}>
+              4 Kegiatan Spesial
+            </span>
+          </div>
 
-            return (
-              <div
-                key={v.id}
-                style={{
-                  position: 'relative',
-                  background: 'linear-gradient(135deg, #182e50 0%, #0d1e38 100%)',
-                  border: '1.5px dashed var(--color-gold)',
-                  borderRadius: '16px',
-                  padding: '22px 20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '16px',
-                  boxShadow: '0 12px 28px rgba(0,0,0,0.4)',
-                  overflow: 'hidden',
-                  transition: 'transform 0.25s ease'
-                }}
-              >
-                {/* Perforated ticket side notches */}
-                <div style={{
-                  position: 'absolute',
-                  left: '-12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '50%',
-                  background: '#0B2046',
-                  borderRight: '1.5px dashed var(--color-gold)'
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  right: '-12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '50%',
-                  background: '#0B2046',
-                  borderLeft: '1.5px dashed var(--color-gold)'
-                }} />
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '20px',
+            width: '100%'
+          }}>
+            {DAY_ACTIVITIES.map((act, index) => {
+              const isDone = !!completedActivities[act.id];
 
-                {/* Left Info */}
-                <div style={{ flex: 1, paddingLeft: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              return (
+                <div
+                  key={act.id}
+                  style={{
+                    position: 'relative',
+                    background: isDone
+                      ? 'linear-gradient(135deg, #132f54 0%, #09203f 100%)'
+                      : 'linear-gradient(135deg, #182e50 0%, #0d1e38 100%)',
+                    border: isDone
+                      ? '1.5px solid rgba(52, 211, 153, 0.6)'
+                      : '1.5px solid rgba(212, 175, 55, 0.4)',
+                    borderRadius: '16px',
+                    padding: '22px 20px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: '14px',
+                    boxShadow: isDone
+                      ? '0 8px 25px rgba(52, 211, 153, 0.15)'
+                      : '0 10px 26px rgba(0,0,0,0.35)',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  {/* Top Bar with Number & Time */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{
+                        fontSize: '0.75rem',
+                        fontWeight: '800',
+                        color: 'var(--color-gold)',
+                        background: 'rgba(212, 175, 55, 0.15)',
+                        border: '1px solid rgba(246, 226, 122, 0.25)',
+                        padding: '3px 8px',
+                        borderRadius: '6px'
+                      }}>
+                        {`0${index + 1}`}
+                      </span>
+                      <span style={{
+                        fontSize: '0.76rem',
+                        color: '#93C5FD',
+                        fontWeight: '600'
+                      }}>
+                        {act.time}
+                      </span>
+                    </div>
+
                     <span style={{
                       fontSize: '0.72rem',
-                      fontWeight: '700',
                       color: 'var(--color-gold-light)',
-                      background: 'rgba(212, 175, 55, 0.15)',
-                      padding: '2px 8px',
+                      background: 'rgba(255,255,255,0.06)',
+                      padding: '3px 8px',
                       borderRadius: '999px',
-                      letterSpacing: '0.5px'
+                      fontWeight: '600'
                     }}>
-                      {v.category}
-                    </span>
-                    <span style={{ fontSize: '0.72rem', color: '#64748B', fontFamily: 'monospace' }}>
-                      {v.code}
+                      {act.tag}
                     </span>
                   </div>
 
-                  <h3 style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontWeight: '800',
-                    fontSize: '1.25rem',
-                    color: '#FFFFFF',
-                    letterSpacing: '0.5px',
-                    margin: '2px 0 6px 0'
-                  }}>
-                    {v.title}
-                  </h3>
+                  {/* Icon & Title */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+                    <div style={{
+                      fontSize: '2.5rem',
+                      lineHeight: '1',
+                      filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.4))'
+                    }}>
+                      {act.icon}
+                    </div>
 
-                  <p style={{
-                    fontSize: '0.88rem',
-                    color: '#CBD5E1',
-                    lineHeight: '1.4'
-                  }}>
-                    {v.subtitle}
-                  </p>
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{
+                        color: '#FFFFFF',
+                        fontSize: '1.25rem',
+                        fontWeight: '800',
+                        margin: '0 0 6px 0',
+                        letterSpacing: '0.3px'
+                      }}>
+                        {act.title}
+                      </h4>
+                      <p style={{
+                        color: '#CBD5E1',
+                        fontSize: '0.88rem',
+                        lineHeight: '1.5',
+                        margin: 0
+                      }}>
+                        {act.description}
+                      </p>
+                    </div>
+                  </div>
 
-                  {/* Claim Button or Claimed badge */}
-                  <div style={{ marginTop: '12px' }}>
+                  {/* Toggle Button */}
+                  <div style={{
+                    marginTop: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderTop: '1px dashed rgba(255,255,255,0.1)',
+                    paddingTop: '12px'
+                  }}>
+                    <button
+                      onClick={() => handleToggleActivity(act)}
+                      style={{
+                        padding: '7px 16px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: isDone
+                          ? 'rgba(52, 211, 153, 0.2)'
+                          : 'linear-gradient(135deg, #F6E27A, #D4AF37)',
+                        color: isDone ? '#34D399' : '#0B2046',
+                        fontWeight: '700',
+                        fontSize: '0.82rem',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        boxShadow: isDone ? 'none' : '0 4px 12px rgba(212, 175, 55, 0.3)',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {isDone ? (
+                        <>
+                          <CheckCircle2 size={16} />
+                          <span>Siap & Terlaksana ❤️</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={15} />
+                          <span>Tandai Siap Dilakukan ✨</span>
+                        </>
+                      )}
+                    </button>
+
+                    {isDone && (
+                      <span style={{ fontSize: '0.75rem', color: '#34D399', fontWeight: '600' }}>
+                        Tersimpan di Jadwal
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Section 2: Tambahan Bonus Spesial */}
+        <div style={{
+          width: '100%',
+          marginTop: '12px',
+          background: 'linear-gradient(145deg, rgba(20, 39, 70, 0.85) 0%, rgba(10, 24, 46, 0.95) 100%)',
+          border: '1.5px solid rgba(246, 226, 122, 0.45)',
+          borderRadius: '20px',
+          padding: '28px 24px',
+          boxShadow: '0 12px 35px rgba(0,0,0,0.45), inset 0 0 25px rgba(212, 175, 55, 0.08)'
+        }}>
+          {/* Bonus Header */}
+          <div style={{ textAlign: 'center', marginBottom: '22px' }}>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              color: '#FDE047',
+              fontSize: '0.8rem',
+              fontWeight: '800',
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              background: 'rgba(253, 224, 71, 0.15)',
+              border: '1px solid rgba(253, 224, 71, 0.35)',
+              padding: '4px 14px',
+              borderRadius: '999px',
+              marginBottom: '6px'
+            }}>
+              <Gift size={15} /> Hadiah Ekstra
+            </span>
+            <h3 style={{
+              color: 'var(--color-gold)',
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(1.5rem, 3.5vw, 2rem)',
+              fontWeight: '800',
+              margin: '4px 0'
+            }}>
+              Tambahan Bonus Spesial
+            </h3>
+            <p style={{ color: '#94A3B8', fontSize: '0.9rem', margin: 0 }}>
+              Bonus manis istimewa dari aku yang siap kamu klaim dan nikmati kapan saja:
+            </p>
+          </div>
+
+          {/* 2 Bonus Cards Grid */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '18px'
+          }}>
+            {BONUS_REWARDS.map((bonus) => {
+              const isClaimed = !!claimedBonuses[bonus.id];
+
+              return (
+                <div
+                  key={bonus.id}
+                  style={{
+                    position: 'relative',
+                    background: 'rgba(15, 30, 56, 0.9)',
+                    border: '1.5px dashed var(--color-gold)',
+                    borderRadius: '14px',
+                    padding: '20px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                    boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+                    <span style={{
+                      fontSize: '2.6rem',
+                      lineHeight: '1',
+                      filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))'
+                    }}>
+                      {bonus.icon}
+                    </span>
+
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span style={{
+                          fontSize: '0.72rem',
+                          fontWeight: '700',
+                          color: 'var(--color-gold-light)',
+                          background: 'rgba(212, 175, 55, 0.15)',
+                          padding: '2px 8px',
+                          borderRadius: '999px'
+                        }}>
+                          {bonus.category}
+                        </span>
+                      </div>
+
+                      <h4 style={{
+                        color: '#FFFFFF',
+                        fontSize: '1.15rem',
+                        fontWeight: '800',
+                        margin: '2px 0 6px 0',
+                        letterSpacing: '0.3px'
+                      }}>
+                        {bonus.title}
+                      </h4>
+
+                      <p style={{
+                        color: '#CBD5E1',
+                        fontSize: '0.86rem',
+                        lineHeight: '1.45',
+                        margin: 0
+                      }}>
+                        {bonus.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Claim Button / Status */}
+                  <div style={{
+                    marginTop: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderTop: '1px dashed rgba(212, 175, 55, 0.25)',
+                    paddingTop: '12px'
+                  }}>
                     {!isClaimed ? (
                       <button
-                        onClick={() => handleClaim(v)}
+                        onClick={() => handleClaimBonus(bonus)}
                         style={{
-                          padding: '6px 16px',
+                          padding: '7px 18px',
                           borderRadius: '8px',
                           background: 'linear-gradient(135deg, #F6E27A, #D4AF37)',
                           color: '#0B2046',
                           fontWeight: '700',
-                          fontSize: '0.85rem',
+                          fontSize: '0.84rem',
                           border: 'none',
                           cursor: 'pointer',
-                          boxShadow: '0 4px 10px rgba(212, 175, 55, 0.3)',
+                          boxShadow: '0 4px 12px rgba(212, 175, 55, 0.35)',
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '6px'
                         }}
                       >
-                        <Ticket size={15} /> Klaim Kupon
+                        <Heart size={15} fill="#0B2046" />
+                        <span>Klaim Bonus Ini</span>
                       </button>
                     ) : (
                       <span style={{
-                        fontSize: '0.8rem',
+                        fontSize: '0.82rem',
                         color: '#34D399',
-                        fontWeight: '600',
+                        fontWeight: '700',
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '4px'
+                        gap: '6px'
                       }}>
-                        <CheckCircle2 size={15} /> Digunakan tgl {claimedVouchers[v.id]?.claimedAt}
+                        <CheckCircle2 size={16} /> Diklaim tgl {claimedBonuses[bonus.id]?.claimedAt} ❤️
                       </span>
                     )}
+
+                    <span style={{
+                      fontSize: '0.72rem',
+                      color: '#94A3B8',
+                      fontStyle: 'italic'
+                    }}>
+                      Berlaku Selamanya
+                    </span>
                   </div>
                 </div>
-
-                {/* Right Icon & Stamp */}
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  minWidth: '70px',
-                  position: 'relative'
-                }}>
-                  <span style={{ fontSize: '2.8rem', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))' }}>
-                    {v.icon}
-                  </span>
-
-                  {/* Ink Stamp Overlay when claimed */}
-                  {isClaimed && (
-                    <div
-                      className="stamp-active"
-                      style={{
-                        position: 'absolute',
-                        border: '3px solid #EF4444',
-                        color: '#EF4444',
-                        fontWeight: '900',
-                        fontSize: '0.78rem',
-                        padding: '3px 6px',
-                        borderRadius: '4px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px',
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        pointerEvents: 'none'
-                      }}
-                    >
-                      TERPAKAI
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
-        {/* Reset Vouchers Option */}
-        {Object.keys(claimedVouchers).length > 0 && (
+        {/* Reset Option if items modified */}
+        {(Object.keys(completedActivities).length > 0 || Object.keys(claimedBonuses).length > 0) && (
           <button
-            onClick={handleResetVouchers}
+            onClick={handleResetAll}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -334,12 +566,19 @@ export default function ScreenVouchers({ onBack, onRestart }) {
               textDecoration: 'underline'
             }}
           >
-            <RotateCcw size={14} /> Reset kupon yang sudah dipakai
+            <RotateCcw size={14} /> Reset pilihan kegiatan & bonus
           </button>
         )}
 
         {/* Navigation Buttons */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', width: '100%', justifyContent: 'center', marginTop: '10px' }}>
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '14px',
+          width: '100%',
+          justifyContent: 'center',
+          marginTop: '10px'
+        }}>
           <button
             onClick={onBack}
             style={{
