@@ -28,16 +28,33 @@ export default function ScreenLanding({ onNext, config }) {
   };
 
   return (
-    <div style={{
-      position: 'relative',
-      width: '100vw',
-      height: '100dvh',
-      minHeight: '100vh',
-      overflow: 'hidden',
-      background: 'radial-gradient(circle at 35% 45%, #0d3b84 0%, #062358 55%, #021235 100%)',
-      userSelect: 'none',
-      boxSizing: 'border-box'
-    }}>
+    <div
+      onClick={() => {
+        if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
+          window.__playBirthdayMusic();
+        }
+      }}
+      onTouchStart={() => {
+        if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
+          window.__playBirthdayMusic();
+        }
+      }}
+      onPointerDown={() => {
+        if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
+          window.__playBirthdayMusic();
+        }
+      }}
+      style={{
+        position: 'relative',
+        width: '100vw',
+        height: '100dvh',
+        minHeight: '100vh',
+        overflow: 'hidden',
+        background: 'radial-gradient(circle at 35% 45%, #0d3b84 0%, #062358 55%, #021235 100%)',
+        userSelect: 'none',
+        boxSizing: 'border-box'
+      }}
+    >
 
       {/* Embedded Keyframe Animations & Responsive Styling */}
       <style>{`
@@ -636,7 +653,7 @@ export default function ScreenLanding({ onNext, config }) {
         }}
       >
         <img
-          src="/blue_lily.png"
+          src="./blue_lily.png"
           alt="Blue Floral Accent"
           style={{
             width: '100%',

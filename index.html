@@ -68,6 +68,13 @@
         // Try playing immediately
         startPlay();
 
+        ['DOMContentLoaded', 'load', 'pageshow', 'focus'].forEach(function(evt) {
+          window.addEventListener(evt, startPlay, { passive: true });
+        });
+        document.addEventListener('visibilitychange', function() {
+          if (document.visibilityState === 'visible') startPlay();
+        });
+
         // 2. Immediate unlock on ANY user touch / tap / click / scroll anywhere on the screen
         var unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown', 'scroll', 'keydown'];
         var unlockHandler = function() {
