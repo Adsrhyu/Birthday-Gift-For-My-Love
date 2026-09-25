@@ -2,7 +2,7 @@
  * High-performance canvas particle burst of outline hearts (love polos tanpa isi)
  * Only outlines are drawn (stroke only, no fill) with elegant physics.
  */
-export function burstOutlineHearts(originX, originY) {
+export function burstOutlineHearts(originX, originY, options = {}) {
   if (typeof window === 'undefined') return;
 
   const xPos = originX !== undefined ? originX : window.innerWidth / 2;
@@ -31,7 +31,7 @@ export function burstOutlineHearts(originX, originY) {
   canvas.height = height * dpr;
   ctx.scale(dpr, dpr);
 
-  const colors = [
+  const colors = options.colors || [
     '#FFFFFF',
     '#93C5FD',
     '#BAE6FD',
@@ -40,13 +40,16 @@ export function burstOutlineHearts(originX, originY) {
     '#FDE047'
   ];
 
-  const particleCount = 55;
+  const particleCount = options.particleCount || 55;
   const particles = [];
 
   for (let i = 0; i < particleCount; i++) {
-    // Burst spreading upwards (-150 to -30 degrees)
-    const angle = (Math.PI / 180) * (-150 + Math.random() * 120);
-    const speed = 7 + Math.random() * 11;
+    // Burst spreading upwards (-150 to -30 degrees default)
+    const minAngle = options.angleMin !== undefined ? options.angleMin : -155;
+    const maxAngle = options.angleMax !== undefined ? options.angleMax : -25;
+    const angle = (Math.PI / 180) * (minAngle + Math.random() * (maxAngle - minAngle));
+    const baseSpeed = options.speed || 7.5;
+    const speed = baseSpeed + Math.random() * 10;
     particles.push({
       x: xPos,
       y: yPos,
@@ -58,9 +61,9 @@ export function burstOutlineHearts(originX, originY) {
       color: colors[Math.floor(Math.random() * colors.length)],
       lineWidth: 2 + Math.random() * 0.8,
       alpha: 1,
-      decay: 0.012 + Math.random() * 0.012,
-      gravity: 0.28 + Math.random() * 0.12,
-      drag: 0.978
+      decay: 0.011 + Math.random() * 0.012,
+      gravity: 0.26 + Math.random() * 0.12,
+      drag: 0.98
     });
   }
 
@@ -119,4 +122,27 @@ export function burstOutlineHearts(originX, originY) {
   }
 
   animate();
+}
+
+/**
+ * Multi-wave celebratory burst of outline hearts (perfect for candle blowing / major celebrations)
+ */
+export function burstCelebrationHearts(originX, originY) {
+  if (typeof window === 'undefined') return;
+  const centerX = originX !== undefined ? originX : window.innerWidth / 2;
+  const centerY = originY !== undefined ? originY : window.innerHeight * 0.45;
+
+  // Wave 1: Immediate powerful bloom
+  burstOutlineHearts(centerX, centerY, { particleCount: 50 });
+
+  // Wave 2: Left and right outward blooms
+  setTimeout(() => {
+    burstOutlineHearts(Math.max(40, centerX - 70), centerY - 10, { particleCount: 40, angleMin: -160, angleMax: -60 });
+    burstOutlineHearts(Math.min(window.innerWidth - 40, centerX + 70), centerY - 10, { particleCount: 40, angleMin: -120, angleMax: -20 });
+  }, 180);
+
+  // Wave 3: Fountain shower upwards to finish the celebration
+  setTimeout(() => {
+    burstOutlineHearts(centerX, centerY - 30, { particleCount: 45, angleMin: -145, angleMax: -35 });
+  }, 380);
 }

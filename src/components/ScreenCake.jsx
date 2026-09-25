@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ArrowLeft, ArrowRight, Sparkles, Wind, RotateCcw } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { burstCelebrationHearts } from '../utils/heartBurst';
 import { romanticSynth } from '../utils/audioSynth';
 
 export default function ScreenCake({ onNext, onBack, config }) {
   const [candlesLit, setCandlesLit] = useState(true);
   const [wishRevealed, setWishRevealed] = useState(false);
+  const cakeContainerRef = useRef(null);
 
   const handleBlowCandles = () => {
     if (!candlesLit) return;
@@ -15,30 +16,17 @@ export default function ScreenCake({ onNext, onBack, config }) {
     // Audio chime
     romanticSynth.playCelebrationChime();
 
-    // Fireworks confetti cascade
-    const duration = 2.5 * 1000;
-    const end = Date.now() + duration;
+    // Taburan love polos tanpa isi (celebratory hollow outline hearts burst)
+    let originX = window.innerWidth / 2;
+    let originY = window.innerHeight * 0.42;
 
-    (function frame() {
-      confetti({
-        particleCount: 5,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#D4AF37', '#F6E27A', '#93C5FD', '#FFFFFF', '#F472B6']
-      });
-      confetti({
-        particleCount: 5,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#D4AF37', '#F6E27A', '#93C5FD', '#FFFFFF', '#F472B6']
-      });
+    if (cakeContainerRef.current) {
+      const rect = cakeContainerRef.current.getBoundingClientRect();
+      originX = rect.left + rect.width / 2;
+      originY = rect.top + rect.height * 0.28; // right where the candle flames are
+    }
 
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    })();
+    burstCelebrationHearts(originX, originY);
   };
 
   const handleRelight = () => {
@@ -107,6 +95,7 @@ export default function ScreenCake({ onNext, onBack, config }) {
         }}>
           {/* Cake Illustration SVG */}
           <div
+            ref={cakeContainerRef}
             onClick={handleBlowCandles}
             style={{
               cursor: candlesLit ? 'pointer' : 'default',
