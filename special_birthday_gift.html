@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Special Birthday Gift - For My Darling ❤️</title>
+    
+    <!-- PWA & Mobile Meta Tags -->
+    <link rel="manifest" href="public/manifest.webmanifest">
+    <meta name="theme-color" content="#0B2046">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Birthday Gift">
+    <link rel="icon" type="image/png" href="heart_lace_clean.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-cursive: 'Great Vibes', 'Dancing Script', cursive;
+            --font-sans: 'Outfit', 'Inter', -apple-system, sans-serif;
+            --color-gold: #D4AF37;
+            --color-gold-light: #F6E27A;
+            --color-blue-soft: #93C5FD;
+            --color-blue-bright: #60A5FA;
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #030f28;
+            color: #F8FAFC;
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .screen {
+            display: none;
+            width: 100vw;
+            min-height: 100dvh;
+            position: relative;
+            overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .screen.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* =================================================== */
+        /* 1. COVER SCREEN (MOBILE-FIRST FLEXIBLE REVISED)      */
+        /* =================================================== */
+        #screen-landing {
+            background: radial-gradient(ellipse at 50% 38%, #0d3b84 0%, #062358 55%, #020f2b 100%);
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 16px 65px 16px;
+        }
+
+        @keyframes gentleTitleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        @keyframes gentleSubtitleFloat {
+            0%, 100% { transform: rotate(-2deg) translateY(0px); }
+            50% { transform: rotate(-1.2deg) translateY(-4px); }
+        }
+        @keyframes gentleHeartFloat {
+            0%, 100% { transform: rotate(7deg) translateY(0px); }
+            50% { transform: rotate(8.5deg) translateY(-6px); }
+        }
+        @keyframes gentleButtonPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 16px rgba(255,255,255,0.25);
+            }
+            50% {
+                transform: scale(1.03);
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55), 0 0 24px rgba(255,255,255,0.45);
+            }
+        }
+
+        @keyframes pointerBounce {
+            0%, 100% { transform: translateY(0px) rotate(-22deg); }
+            50% { transform: translateY(-6px) rotate(-19deg); }
+        }
+
+        /* Right Torn Denim Panel (Tailored for mobile portrait) */
+        .cover-denim-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: clamp(140px, 38vw, 320px);
+            background-color: #101d32;
+            background-image: 
+                repeating-linear-gradient(to right, rgba(255,255,255,0.11) 0px, rgba(255,255,255,0.11) 1px, transparent 1px, transparent 3px),
+                repeating-linear-gradient(to bottom, rgba(0,0,0,0.38) 0px, rgba(0,0,0,0.38) 1px, transparent 1px, transparent 4px),
+                repeating-linear-gradient(65deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 5px);
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 100 1000'%3E%3Cpath d='M 100 0 L 42 0 C 72 65, 72 65, 42 130 C 12 195, 12 195, 42 260 C 72 325, 72 325, 42 390 C 12 455, 12 455, 42 520 C 72 585, 72 585, 42 650 C 12 715, 12 715, 42 780 C 72 845, 72 845, 42 910 C 18 960, 28 985, 42 1000 L 100 1000 Z' fill='black'/%3E%3C/svg%3E");
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 100 1000'%3E%3Cpath d='M 100 0 L 42 0 C 72 65, 72 65, 42 130 C 12 195, 12 195, 42 260 C 72 325, 72 325, 42 390 C 12 455, 12 455, 42 520 C 72 585, 72 585, 42 650 C 12 715, 12 715, 42 780 C 72 845, 72 845, 42 910 C 18 960, 28 985, 42 1000 L 100 1000 Z' fill='black'/%3E%3C/svg%3E");
+            mask-size: 100% 100%;
+            -webkit-mask-size: 100% 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Thick White Rectangular Dashed Stitch Line (Matches user photo) */
+        .cover-ripped-edge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: clamp(140px, 38vw, 320px);
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Mobile Main Left Column (Enlarged Typography & Button - Raised Upwards) */
+        .cover-mobile-container {
+            position: absolute;
+            top: clamp(215px, 32vh, 270px);
+            left: 0;
+            width: calc(100% - clamp(110px, 30vw, 160px));
+            max-width: 460px;
+            z-index: 14;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding-left: clamp(16px, 5.5vw, 34px);
+            padding-right: 8px;
+        }
+
+        /* 1. Foto dengan Bingkai Love Dulu (HD, Large, Over Dashed Seam Line) */
+        .cover-heart-section {
+            position: absolute;
+            top: clamp(52px, 8.5vh, 85px);
+            right: clamp(10px, 4vw, 42px);
+            width: clamp(195px, 52vw, 285px);
+            height: clamp(195px, 52vw, 285px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 16;
+        }
+
+        .cover-heart-box {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 14px 30px rgba(0,0,0,0.72));
+            transition: transform 0.4s var(--ease-spring);
+            animation: gentleHeartFloat 4.5s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        .cover-heart-box:hover {
+            transform: rotate(3deg) scale(1.05);
+        }
+
+        .cover-heart-stars {
+            position: absolute;
+            top: 16px;
+            right: -16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 17;
+            pointer-events: none;
+        }
+
+        /* 2. Tulisan Yang Sudah Dirancang (Enlarged & Animated Motion) */
+        .cover-typography-section {
+            text-align: left;
+            margin-bottom: clamp(6px, 1.4vh, 12px);
+            z-index: 12;
+        }
+
+        .cover-title {
+            font-family: var(--font-serif);
+            font-size: clamp(3.4rem, 11.5vw, 5.0rem);
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 0.95;
+            letter-spacing: -0.5px;
+            text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255,255,255,0.2);
+            margin-bottom: 4px;
+            animation: gentleTitleFloat 4s ease-in-out infinite;
+        }
+
+        .cover-subtitle {
+            font-family: var(--font-cursive);
+            font-size: clamp(1.9rem, 6.4vw, 2.75rem);
+            color: #FFFFFF;
+            fontWeight: 400;
+            margin-top: 8px;
+            line-height: 1.15;
+            display: block;
+            text-shadow: 0 3px 14px rgba(0,0,0,0.65);
+            letter-spacing: 0.5px;
+        }
+
+        /* 3. Open The Gift Button */
+        .cover-btn-section {
+            z-index: 18;
+            margin-top: clamp(14px, 2.2vh, 22px);
+        }
+
+        .open-gift-btn {
+            background: #FFFFFF;
+            color: #0B2046;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: clamp(1.05rem, 3.6vw, 1.22rem);
+            padding: 13px 38px;
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-spring);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            animation: gentleButtonPulse 3s ease-in-out infinite;
+        }
+
+        .open-gift-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 14px 32px rgba(0,0,0,0.55), 0 0 22px rgba(255,255,255,0.35);
+        }
+
+        .open-gift-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* 4. Amplop di Pojok Kanan (Bottom-Right Scrapbook Envelope - Tucked Behind Lace) */
+        .cover-envelope-corner {
+            position: absolute;
+            bottom: clamp(44px, 6.0vh, 70px);
+            right: clamp(6px, 1.8vw, 22px);
+            width: clamp(180px, 47vw, 245px);
+            height: clamp(168px, 43vw, 228px);
+            transform: rotate(-14deg);
+            transform-origin: bottom right;
+            z-index: 14;
+            pointer-events: none;
+        }
+
+        /* Bottom Scalloped Floral Lace Trim - Delicate & Refined Size */
+        .bottom-lace-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: clamp(52px, 7.2vh, 66px);
+            z-index: 20;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .lace-layer-ruffle {
+            position: absolute;
+            bottom: clamp(16px, 2.2vh, 20px);
+            left: 0;
+            right: 0;
+            height: clamp(36px, 5vh, 46px);
+            background-image: radial-gradient(circle at 18px 0px, transparent 16px, #FFFFFF 17px);
+            background-size: 36px 36px;
+            background-repeat: repeat-x;
+            filter: drop-shadow(0 -3px 6px rgba(0,0,0,0.28));
+        }
+
+        .lace-layer-eyelet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: clamp(20px, 2.8vh, 26px);
+            background: #FFFFFF;
+            background-image: 
+                radial-gradient(circle at 7px 7px, #06225a 2px, transparent 2.5px),
+                radial-gradient(circle at 7px 0px, transparent 7px, #FFFFFF 8px);
+            background-size: 14px 14px, 14px 8px;
+            background-repeat: repeat-x;
+        }
+
+        /* Floating Top Music Player Bar (Hidden as requested: "ikon lagu hapus saja") */
+        #music-player-bar {
+            display: none !important;
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            z-index: 100;
+            background: rgba(6, 25, 60, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 9999px;
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        #music-player-bar:hover {
+            transform: scale(1.03);
+        }
+
+        .turntable-disc {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #D4AF37 30%, #1E293B 31%, #000 70%);
+            border: 1px solid #D4AF37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            animation: spin 3s linear infinite;
+            animation-play-state: paused;
+        }
+
+        .turntable-disc.playing {
+            animation-play-state: running;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Sound Wave Animation Bars */
+        .sound-wave {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+        }
+        .sound-bar {
+            width: 2.5px;
+            height: 4px;
+            background: var(--color-gold);
+            border-radius: 1px;
+            transition: height 0.2s ease;
+        }
+        .playing .sound-bar:nth-child(1) { animation: soundAnim 0.7s infinite alternate ease-in-out; }
+        .playing .sound-bar:nth-child(2) { animation: soundAnim 0.5s infinite alternate ease-in-out 0.2s; }
+        .playing .sound-bar:nth-child(3) { animation: soundAnim 0.8s infinite alternate ease-in-out 0.4s; }
+
+        @keyframes soundAnim {
+            0% { height: 3px; }
+            100% { height: 14px; }
+        }
+
+        /* Common Screen Styles */
+        .denim-inner-bg {
+            background-color: #030f28;
+            background-image: 
+                radial-gradient(ellipse at 50% 30%, #0d3b84 0%, #062358 60%, #020f2b 100%),
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 4px);
+        }
+
+        .glass-box {
+            background: rgba(11, 32, 70, 0.76);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 175, 55, 0.1);
+        }
+
+        .gold-btn {
+            background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 100%);
+            color: #0B2046;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 9999px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .gold-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.6);
+        }
+
+        /* Flame flicker */
+        .flame-anim {
+            animation: flicker 0.15s ease-in-out infinite alternate;
+            transform-origin: 50% 100%;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-1deg); opacity: 0.95; }
+            100% { transform: scale(1.08) rotate(1.5deg); opacity: 1; }
+        }
+
+        /* Voucher stamp */
+        .voucher-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .voucher-card:hover {
+            transform: translateY(-3px);
+        }
+        .voucher-stamp {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%) rotate(-15deg);
+            border: 2px dashed #EF4444;
+            color: #EF4444;
+            padding: 4px 12px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            border-radius: 6px;
+            pointer-events: none;
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        .voucher-card.claimed .voucher-stamp {
+            display: block;
+        }
+        .voucher-card.claimed .v-btn {
+            background: #475569 !important;
+            color: #94A3B8 !important;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Optional audio element for local MP3 file -->
+    <audio id="bg-music" src="shape_of_my_heart.mp3" loop preload="auto"></audio>
+
+    <!-- ============================================== -->
+    <!-- FLOATING TOP MUSIC PLAYER BAR                  -->
+    <!-- ============================================== -->
+    <aside id="music-player-bar" onclick="toggleMusic()" title="Shape of My Heart (Sting) - Klik untuk jeda/putar">
+        <div id="music-disc" class="turntable-disc">🎵</div>
+        <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: #F8FAFC; letter-spacing: 0.3px;">Shape of My Heart</span>
+            <span id="music-status" style="font-size: 0.62rem; color: var(--color-gold-light);">Memutar Reff 🎶</span>
+        </div>
+        <div class="sound-wave" id="sound-bars">
+            <div class="sound-bar"></div>
+            <div class="sound-bar"></div>
+            <div class="sound-bar"></div>
+        </div>
+    </aside>
+
+    <!-- ============================================== -->
+    <!-- 1. SCREEN LANDING (REVISED MOBILE-FIRST COVER) -->
+    <!-- ============================================== -->
+    <main id="screen-landing" class="screen active">
+        
+        <!-- Right Torn Denim Panel (Scrapbook Texture) -->
+        <div class="cover-denim-panel"></div>
+
+        <!-- Thick White Rectangular Dashed Stitch Line (Matches user photo) -->
+        <svg class="cover-ripped-edge" viewBox="0 0 100 1000" preserveAspectRatio="none">
+            <path d="M 42 0 C 72 65, 72 65, 42 130 C 12 195, 12 195, 42 260 C 72 325, 72 325, 42 390 C 12 455, 12 455, 42 520 C 72 585, 72 585, 42 650 C 12 715, 12 715, 42 780 C 72 845, 72 845, 42 910 C 18 960, 28 985, 42 1000" fill="none" stroke="#FFFFFF" stroke-width="6.5" stroke-dasharray="20 10" stroke-linecap="butt" filter="drop-shadow(-3px 0 5px rgba(0,0,0,0.6))" />
+        </svg>
+
+        <!-- Top-Left Paper Airplane & Dotted Flight Trail (Close to Heart Frame) -->
+        <div style="position: absolute; top: clamp(24px, 4.4vh, 48px); left: clamp(20px, 6vw, 65px); z-index: 12; pointer-events: none;">
+            <div style="display: flex; align-items: center;">
+                <!-- Paper Airplane -->
+                <svg width="46" height="46" viewBox="0 0 64 64" fill="none" style="transform: rotate(-22deg); filter: drop-shadow(0 6px 10px rgba(0,0,0,0.45));">
+                    <path d="M6 32 L58 6 L36 58 L28 36 Z" fill="#FFFFFF" />
+                    <path d="M28 36 L58 6 L36 58" fill="#E2E8F0" />
+                    <path d="M28 36 L36 46 L40 36" fill="#CBD5E1" />
+                    <line x1="28" y1="36" x2="58" y2="6" stroke="#94A3B8" stroke-width="1.2" />
+                </svg>
+
+                <!-- Dotted Flight Trail (Curves gracefully towards Heart Frame) -->
+                <svg width="120" height="48" viewBox="0 0 120 48" fill="none" style="margin-left: -8px; margin-top: 10px; opacity: 0.95;">
+                    <path d="M 6 24 C 30 42, 55 10, 85 24 C 102 32, 112 18, 118 24" stroke="#FFFFFF" stroke-width="2.2" stroke-dasharray="4 4" />
+                </svg>
+            </div>
+
+            <!-- Soft Blue Floating Mini Hearts / Stars near Airplane (NO PINK) -->
+            <div style="position: absolute; top: 36px; left: 10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#93C5FD"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </div>
+            <div style="position: absolute; top: 16px; left: 56px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="#93C5FD"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 2. FRAME LOVE OVER DASHED SEAM LINE (HD & LARGE) -->
+        <!-- ============================================== -->
+        <div class="cover-heart-section">
+            <div class="cover-heart-box">
+                <img src="heart_lace_hd.png" onerror="this.src='couple_main.jpg'" alt="Our Sweet Memory" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+
+            <!-- Sparkling Soft-Blue & Gold Stars beside Heart (NO PINK) -->
+            <div class="cover-heart-stars">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="rgba(147, 197, 253, 0.95)" stroke="#FFFFFF" stroke-width="0.8" style="filter: drop-shadow(0 0 8px rgba(147,197,253,0.9));">
+                    <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" />
+                </svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(246, 226, 122, 0.95)" stroke="#FFFFFF" stroke-width="0.8" style="transform: translateX(6px); filter: drop-shadow(0 0 7px rgba(246,226,122,0.85));">
+                    <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" />
+                </svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(191, 219, 254, 0.9)" stroke="#FFFFFF" stroke-width="0.8" style="transform: translateX(2px); filter: drop-shadow(0 0 5px rgba(191,219,254,0.7));">
+                    <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 3. MAIN TYPOGRAPHY & BUTTON (ENLARGED)        -->
+        <!-- ============================================== -->
+        <div class="cover-mobile-container">
+            
+            <!-- 1. TULISAN YANG SUDAH DIRANCANG (ENLARGED) -->
+            <div class="cover-typography-section">
+                <h1 class="cover-title">
+                    Happy<br>Birthday
+                </h1>
+                
+                <p class="cover-subtitle">
+                    Special gift<br>for special person
+                </p>
+            </div>
+
+            <!-- 2. LALU OPEN THE GIFT -->
+            <div class="cover-btn-section" style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
+                <button onclick="goToScreen('screen-pin')" class="open-gift-btn">
+                    Open The Gift
+                </button>
+
+                <!-- Paper Airplane Pointer below button, bouncing upward -->
+                <svg width="26" height="26" viewBox="0 0 64 64" fill="none" style="animation: pointerBounce 1.2s ease-in-out infinite; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.45)); margin-left: 18px;">
+                    <path d="M6 32 L58 6 L36 58 L28 36 Z" fill="#FFFFFF" />
+                    <path d="M28 36 L58 6 L36 58" fill="#E2E8F0" />
+                    <path d="M28 36 L36 46 L40 36" fill="#CBD5E1" />
+                    <line x1="28" y1="36" x2="58" y2="6" stroke="#94A3B8" stroke-width="1.2" />
+                </svg>
+            </div>
+
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 4. DI POJOK KANAN BARU ADA AMPLOP ITU (OPEN WATERCOLOR ENVELOPE) -->
+        <!-- ================================================================= -->
+        <div class="cover-envelope-corner">
+            <div style="position: relative; width: 100%; height: 100%;">
+
+                <!-- 1. Open Back Flap & Deep Inner Lining of Envelope -->
+                <div style="position: absolute; bottom: 12px; left: 14px; right: 18px; height: 84%; background: linear-gradient(145deg, #A8CEF8 0%, #7CB5F7 45%, #60A5FA 100%); clip-path: polygon(0% 36%, 50% 0%, 100% 36%, 100% 100%, 0% 100%); border-radius: 4px; box-shadow: 0 12px 28px rgba(0,0,0,0.38); filter: drop-shadow(0 4px 10px rgba(96, 165, 250, 0.25));">
+                    <!-- Darker Inner Pocket Cavity -->
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 64%; background: linear-gradient(180deg, #4A83D0 0%, #356BB4 100%); box-shadow: inset 0 8px 16px rgba(0,0,0,0.32);"></div>
+                </div>
+
+                <!-- 2. White Card Poking Out Tilted (Matches envelope diagonal slant) -->
+                <div style="position: absolute; top: 4%; left: 16%; width: 74%; height: 66%; background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 85%, #F1F5F9 100%); border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.12); transform: rotate(-3deg); transform-origin: bottom center; z-index: 3; padding: 12px 10px 8px 12px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 1px solid rgba(255,255,255,0.9);">
+                    <!-- Little Blue Watercolor Heart on Top Right of Card -->
+                    <div style="position: absolute; top: 6px; right: 8px; width: 18px; height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));">
+                        <svg viewBox="0 0 24 24" width="100%" height="100%" fill="#60A5FA">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+
+                    <!-- Signature Calligraphy Title: For my love -->
+                    <h3 style="font-family: var(--font-cursive); font-size: clamp(1.65rem, 5.5vw, 2.25rem); font-weight: 700; color: #1E293B; line-height: 1.05; margin: 0 0 2px 0; letter-spacing: -0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.06);">
+                        For my love
+                    </h3>
+
+                    <!-- Delicate Cursive Subtitle: special day -->
+                    <p style="font-family: var(--font-cursive); font-size: clamp(0.95rem, 3.2vw, 1.25rem); font-weight: 600; color: #475569; line-height: 1.15; margin: 2px 0 0 0; font-style: italic; letter-spacing: 0.3px;">
+                        special day
+                    </p>
+                </div>
+
+                <!-- 3. Front Pocket Flaps of Envelope (Fold over Card) -->
+                <div style="position: absolute; bottom: 12px; left: 14px; right: 18px; height: 52%; z-index: 4; pointer-events: none;">
+                    <svg viewBox="0 0 200 120" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block; filter: drop-shadow(0 -3px 8px rgba(0,0,0,0.22));">
+                        <defs>
+                            <linearGradient id="htmlEnvLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#93C5FD"/>
+                                <stop offset="60%" stop-color="#78ABEE"/>
+                                <stop offset="100%" stop-color="#60A5FA"/>
+                            </linearGradient>
+                            <linearGradient id="htmlEnvRightGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#85B7F2"/>
+                                <stop offset="60%" stop-color="#6AA0E8"/>
+                                <stop offset="100%" stop-color="#508BD8"/>
+                            </linearGradient>
+                            <linearGradient id="htmlEnvBottomGrad" x1="50%" y1="100%" x2="50%" y2="0%">
+                                <stop offset="0%" stop-color="#5B95E0"/>
+                                <stop offset="100%" stop-color="#7FB2F4"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M 0 120 L 0 0 L 105 76 Z" fill="url(#htmlEnvLeftGrad)" opacity="0.98"/>
+                        <path d="M 200 120 L 200 0 L 95 76 Z" fill="url(#htmlEnvRightGrad)" opacity="0.96"/>
+                        <path d="M 0 120 L 100 62 L 200 120 Z" fill="url(#htmlEnvBottomGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+                        <line x1="0" y1="0" x2="100" y2="72" stroke="rgba(255,255,255,0.55)" stroke-width="1.4"/>
+                        <line x1="200" y1="0" x2="100" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="1.2"/>
+                    </svg>
+                </div>
+
+                <!-- 4. Blue Heart Tucked in Front Pocket Corner -->
+                <div style="position: absolute; bottom: 26%; left: 22%; width: 24px; height: 24px; z-index: 5; transform: rotate(-14deg); filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));">
+                    <svg viewBox="0 0 24 24" width="100%" height="100%" fill="#60A5FA">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+
+                <!-- 5. Floating Soft-Blue Watercolor Hearts around Envelope (From User Photo) -->
+                <div style="position: absolute; top: 2%; left: 8%; width: 16px; height: 16px; z-index: 12; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));">
+                    <svg viewBox="0 0 24 24" width="100%" height="100%" fill="#93C5FD"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div style="position: absolute; top: 18%; left: -6%; width: 22px; height: 22px; z-index: 12; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.28));">
+                    <svg viewBox="0 0 24 24" width="100%" height="100%" fill="#60A5FA"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div style="position: absolute; top: 40%; left: -15%; width: 26px; height: 26px; z-index: 12; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));">
+                    <svg viewBox="0 0 24 24" width="100%" height="100%" fill="#60A5FA"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div style="position: absolute; top: 65%; left: -10%; width: 18px; height: 18px; z-index: 12; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));">
+                    <svg viewBox="0 0 24 24" width="100%" height="100%" fill="#93C5FD"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div style="position: absolute; top: 4%; right: 22%; width: 22px; height: 22px; z-index: 12; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.28));">
+                    <svg viewBox="0 0 24 24" width="100%" height="100%" fill="#60A5FA"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div style="position: absolute; top: 16%; right: -4%; width: 26px; height: 26px; z-index: 12; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));">
+                    <svg viewBox="0 0 24 24" width="100%" height="100%" fill="#60A5FA"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div style="position: absolute; top: 42%; right: -2%; width: 20px; height: 20px; z-index: 12; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25));">
+                    <svg viewBox="0 0 24 24" width="100%" height="100%" fill="#93C5FD"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 6. Dark Navy Lily Flower Rested on Top of White Lace (Bottom Right Corner) -->
+        <div style="position: absolute; bottom: clamp(-8px, -1.2vh, -2px); right: clamp(-30px, -5vw, -16px); z-index: 25; width: clamp(120px, 30vw, 158px); height: clamp(130px, 33vw, 172px); transform: rotate(10deg); filter: drop-shadow(0 8px 22px rgba(0,0,0,0.65)); pointer-events: none;">
+            <img src="blue_lily.png" alt="Blue Floral Accent" style="width: 100%; height: 100%; object-fit: contain;">
+        </div>
+
+        <!-- Luxurious White Scalloped Lace Trim Across Bottom -->
+        <div class="bottom-lace-container">
+            <div class="lace-layer-ruffle"></div>
+            <div class="lace-layer-eyelet"></div>
+        </div>
+
+    </main>
+
+    <!-- ============================================== -->
+    <!-- 2. SCREEN PIN (SECRET CODE WITH 2709)          -->
+    <!-- ============================================== -->
+    <section id="screen-pin" class="screen denim-inner-bg" style="flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+        <div class="glass-box" style="max-width: 420px; width: 100%; text-align: center;">
+            <div style="font-size: 2.8rem; margin-bottom: 8px;">🔒</div>
+            <h2 style="font-family: var(--font-serif); font-size: 2.2rem; color: var(--color-gold); margin-bottom: 6px;">Secret Code</h2>
+            <p style="color: #CBD5E1; font-size: 0.95rem; margin-bottom: 24px;">Masukkan tanggal spesial kita berdua! ❤️</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+                <button onclick="checkPin('1402')" class="gold-btn" style="background: rgba(255,255,255,0.08); color: #FFF; border: 1px solid rgba(212,175,55,0.3); font-size: 1.1rem; padding: 14px;">1402</button>
+                <button onclick="checkPin('0101')" class="gold-btn" style="background: rgba(255,255,255,0.08); color: #FFF; border: 1px solid rgba(212,175,55,0.3); font-size: 1.1rem; padding: 14px;">0101</button>
+                <button onclick="checkPin('2709')" class="gold-btn" style="background: rgba(255,255,255,0.08); color: #FFF; border: 1px solid rgba(212,175,55,0.3); font-size: 1.1rem; padding: 14px;">2709</button>
+                <button onclick="checkPin('2512')" class="gold-btn" style="background: rgba(255,255,255,0.08); color: #FFF; border: 1px solid rgba(212,175,55,0.3); font-size: 1.1rem; padding: 14px;">2512</button>
+            </div>
+            
+            <p id="pin-error" style="color: #F87171; font-size: 0.9rem; margin-top: 10px; display: none;">Oops, bukan tanggal itu sayang! Coba ingat-ingat lagi 😉</p>
+
+            <button onclick="goToScreen('screen-landing')" style="margin-top: 20px; background: none; border: none; color: #94A3B8; text-decoration: underline; cursor: pointer; font-size: 0.9rem;">
+                Kembali ke Cover
+            </button>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 3. SCREEN CALENDAR                             -->
+    <!-- ============================================== -->
+    <section id="screen-calendar" class="screen denim-inner-bg" style="flex-direction: column; align-items: center; justify-content: center; padding: 24px;">
+        <div style="max-width: 520px; width: 100%; text-align: center;">
+            <h2 style="font-family: var(--font-serif); font-size: 2.8rem; color: var(--color-gold); margin-bottom: 4px;">The Day</h2>
+            <p style="color: #CBD5E1; font-size: 1rem; margin-bottom: 22px;">A Very Special Date in September ✨</p>
+
+            <div class="glass-box" style="margin-bottom: 24px;">
+                <h3 style="font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 16px; color: #FFFFFF;">September</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center;">
+                    <span style="font-size: 0.85rem; color: #94A3B8; font-weight: 700;">Su</span>
+                    <span style="font-size: 0.85rem; color: #94A3B8; font-weight: 700;">Mo</span>
+                    <span style="font-size: 0.85rem; color: #94A3B8; font-weight: 700;">Tu</span>
+                    <span style="font-size: 0.85rem; color: #94A3B8; font-weight: 700;">We</span>
+                    <span style="font-size: 0.85rem; color: #94A3B8; font-weight: 700;">Th</span>
+                    <span style="font-size: 0.85rem; color: #94A3B8; font-weight: 700;">Fr</span>
+                    <span style="font-size: 0.85rem; color: #94A3B8; font-weight: 700;">Sa</span>
+                    
+                    <div></div><div></div>
+                    <!-- Days 1 to 26 -->
+                    <script>
+                        for(let d=1; d<=26; d++) {
+                            document.write(`<div style="aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,0.05); font-size:0.9rem; color:#CBD5E1;">${d}</div>`);
+                        }
+                    </script>
+                    <!-- Special Day 27 -->
+                    <div style="aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:50%; background:linear-gradient(135deg, #F6E27A, #D4AF37); color:#0B2046; font-weight:800; font-size:1.15rem; box-shadow:0 0 20px rgba(212,175,55,0.85); transform:scale(1.18);">
+                        27
+                        <span style="font-size: 0.65rem; margin-top:-2px;">♥</span>
+                    </div>
+                    <!-- Days 28 to 30 -->
+                    <script>
+                        for(let d=28; d<=30; d++) {
+                            document.write(`<div style="aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,0.05); font-size:0.9rem; color:#CBD5E1;">${d}</div>`);
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 14px; justify-content: center;">
+                <button onclick="goToScreen('screen-pin')" style="background: none; border: 1px solid #64748B; color: #CBD5E1; padding: 12px 24px; border-radius: 999px; cursor: pointer;">Kembali</button>
+                <button onclick="goToScreen('screen-cake')" class="gold-btn">Tiup Lilin Ulang Tahun 🎂</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 4. SCREEN CAKE & CANDLE BLOW INTERACTION       -->
+    <!-- ============================================== -->
+    <section id="screen-cake" class="screen denim-inner-bg" style="flex-direction: column; align-items: center; justify-content: center; padding: 24px;">
+        <div style="max-width: 520px; width: 100%; text-align: center;">
+            <h2 style="font-family: var(--font-serif); font-size: 2.8rem; color: var(--color-gold);">Make a Wish</h2>
+            <p id="cake-sub" style="color: #CBD5E1; font-size: 1rem; margin-bottom: 22px;">Ucapkan doa dan harapan terbaikmu, lalu ketuk untuk tiup lilinnya! 🎂</p>
+
+            <div class="glass-box" style="margin-bottom: 24px; display: flex; flex-direction: column; align-items: center;">
+                <!-- Cake SVG -->
+                <svg width="200" height="200" viewBox="0 0 160 160" fill="none" style="cursor: pointer;" onclick="blowCandles()">
+                    <rect x="52" y="44" width="6" height="24" rx="2" fill="#E2E8F0" />
+                    <rect x="77" y="36" width="6" height="32" rx="2" fill="#F8FAFC" />
+                    <rect x="102" y="44" width="6" height="24" rx="2" fill="#E2E8F0" />
+                    <!-- Flames -->
+                    <g id="candle-flames" class="flame-anim">
+                        <ellipse cx="55" cy="34" rx="7" ry="12" fill="#FBBF24" />
+                        <ellipse cx="80" cy="22" rx="8" ry="14" fill="#FBBF24" />
+                        <ellipse cx="105" cy="34" rx="7" ry="12" fill="#FBBF24" />
+                    </g>
+                    <!-- Cake Body -->
+                    <path d="M40 78 C40 68, 55 64, 80 64 C105 64, 120 68, 120 78 L120 95 C120 102, 105 106, 80 106 C55 106, 40 102, 40 95 Z" fill="#1E293B" stroke="#D4AF37" stroke-width="2" />
+                    <path d="M25 98 C25 90, 45 86, 80 86 C115 86, 135 90, 135 98 L135 125 C135 133, 115 137, 80 137 C45 137, 25 133, 25 125 Z" fill="#0B2046" stroke="#D4AF37" stroke-width="2.5" />
+                    <ellipse cx="80" cy="132" rx="68" ry="12" fill="#334155" stroke="#94A3B8" stroke-width="2" />
+                </svg>
+
+                <button id="blow-btn" onclick="blowCandles()" class="gold-btn" style="margin-top: 18px;">
+                    Tiup Lilin Sekarang 🎂
+                </button>
+
+                <!-- Birthday Wish Box (Revealed upon blowing) -->
+                <div id="wish-box" style="display: none; margin-top: 20px; background: rgba(7, 21, 43, 0.85); border: 1px dashed var(--color-gold); border-radius: 14px; padding: 18px;">
+                    <h4 style="color: var(--color-gold); font-family: var(--font-serif); font-size: 1.3rem;">Doa Tulus Untukmu ❤️</h4>
+                    <p style="font-family: var(--font-cursive); font-size: 1.45rem; color: #FFF; margin-top: 6px; line-height: 1.4;">
+                        "Semoga di usiamu yang baru, semua impianmu tercapai, selalu sehat, bahagia, dan kita selalu bersama melewati hari-hari bahagia!"
+                    </p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 14px; justify-content: center;">
+                <button onclick="goToScreen('screen-calendar')" style="background: none; border: 1px solid #64748B; color: #CBD5E1; padding: 12px 24px; border-radius: 999px; cursor: pointer;">Kembali</button>
+                <button onclick="goToScreen('screen-letter')" class="gold-btn">Buka Surat Cinta 💌</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 5. SCREEN LETTER (ROMANTIC PARCHMENT)          -->
+    <!-- ============================================== -->
+    <section id="screen-letter" class="screen denim-inner-bg" style="flex-direction: column; align-items: center; justify-content: center; padding: 24px;">
+        <div style="max-width: 560px; width: 100%; text-align: center;">
+            <h2 style="font-family: var(--font-serif); font-size: 2.8rem; color: var(--color-gold);">A Letter For You</h2>
+            <p style="color: #CBD5E1; font-size: 1rem; margin-bottom: 22px;">Surat kecil dari lubuk hatiku yang terdalam ❤️</p>
+
+            <div class="glass-box" style="background: linear-gradient(135deg, #FFFDF8, #F9F5EC); color: #1E293B; border: 2px dashed #C5A059; text-align: left; padding: 34px 28px; margin-bottom: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);">
+                <h3 style="font-family: var(--font-cursive); font-size: 2.3rem; color: #0B2046; margin-bottom: 12px;">Sayangku tercinta,</h3>
+                <p style="font-family: 'Caveat', cursive; font-size: 1.55rem; line-height: 1.5; color: #1E293B; white-space: pre-line;">
+                    Selamat ulang tahun ya sayang! ❤️
+
+                    Terima kasih banyak sudah hadir dan mewarnai hidupku. Terima kasih sudah selalu sabar, perhatian, selalu jadi tempat bersandar, dan orang yang paling bisa bikin aku tersenyum setiap hari.
+
+                    Semoga di usiamu yang baru ini, setiap langkah dan cita-citamu selalu dimudahkan jalannya. Diberikan kesehatan, kebahagiaan yang melimpah, dan semoga kita bisa terus merayakan ulang tahun-ulang tahun berikutnya berdua.
+
+                    Happy birthday, my favorite person in the world! 🎂🥂
+                </p>
+                <div style="text-align: right; margin-top: 20px; border-top: 1px dashed #C5A059; padding-top: 12px;">
+                    <p style="font-family: var(--font-cursive); font-size: 1.7rem; color: #0B2046;">Selamanya & Selalu ❤️</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 14px; justify-content: center;">
+                <button onclick="goToScreen('screen-cake')" style="background: none; border: 1px solid #64748B; color: #CBD5E1; padding: 12px 24px; border-radius: 999px; cursor: pointer;">Kembali</button>
+                <button onclick="goToScreen('screen-memories')" class="gold-btn">Galeri Kenangan Indah 📸</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 6. SCREEN MEMORIES (REAL COUPLE PHOTOS)        -->
+    <!-- ============================================== -->
+    <section id="screen-memories" class="screen denim-inner-bg" style="flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px;">
+        <div style="max-width: 980px; width: 100%; text-align: center;">
+            <h2 style="font-family: var(--font-serif); font-size: 2.8rem; color: var(--color-gold);">Our Memories</h2>
+            <p style="color: #CBD5E1; font-size: 1rem; margin-bottom: 30px;">Momen-momen manis yang selalu ada di hati ❤️</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 26px; margin-bottom: 34px;">
+                <!-- Memory 1 -->
+                <div style="background: #111a2e; padding: 14px 14px 22px 14px; border-radius: 8px; box-shadow: 0 14px 30px rgba(0,0,0,0.6); transform: rotate(-2deg); transition: transform 0.3s ease; border: 1px solid rgba(255,255,255,0.1);" onmouseenter="this.style.transform='scale(1.03) rotate(0deg)'" onmouseleave="this.style.transform='rotate(-2deg)'">
+                    <img src="couple_memory_1.jpg" onerror="this.src='public/couple_memory_1.jpg'" style="width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 6px;">
+                    <p style="margin-top: 14px; font-weight: 700; color: #FFF; font-size: 0.95rem; letter-spacing: 1px;">MOMEN PERTAMA</p>
+                    <p style="font-family: var(--font-cursive); font-size: 1.25rem; color: var(--color-gold-light);">Jalan Santai Berdua</p>
+                </div>
+
+                <!-- Memory 2 -->
+                <div style="background: #111a2e; padding: 14px 14px 22px 14px; border-radius: 8px; box-shadow: 0 14px 30px rgba(0,0,0,0.6); transform: rotate(2deg); transition: transform 0.3s ease; border: 1px solid rgba(255,255,255,0.1);" onmouseenter="this.style.transform='scale(1.03) rotate(0deg)'" onmouseleave="this.style.transform='rotate(2deg)'">
+                    <img src="couple_memory_2.jpg" onerror="this.src='public/couple_memory_2.jpg'" style="width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 6px;">
+                    <p style="margin-top: 14px; font-weight: 700; color: #FFF; font-size: 0.95rem; letter-spacing: 1px;">PETUALANGAN KITA</p>
+                    <p style="font-family: var(--font-cursive); font-size: 1.25rem; color: var(--color-gold-light);">Hiking & Travelling</p>
+                </div>
+
+                <!-- Memory 3 -->
+                <div style="background: #111a2e; padding: 14px 14px 22px 14px; border-radius: 8px; box-shadow: 0 14px 30px rgba(0,0,0,0.6); transform: rotate(-1deg); transition: transform 0.3s ease; border: 1px solid rgba(255,255,255,0.1);" onmouseenter="this.style.transform='scale(1.03) rotate(0deg)'" onmouseleave="this.style.transform='rotate(-1deg)'">
+                    <img src="couple_memory_3.jpg" onerror="this.src='public/couple_memory_3.jpg'" style="width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 6px;">
+                    <p style="margin-top: 14px; font-weight: 700; color: #FFF; font-size: 0.95rem; letter-spacing: 1px;">HARI INI & SELAMANYA</p>
+                    <p style="font-family: var(--font-cursive); font-size: 1.25rem; color: var(--color-gold-light);">Senyum Terbaik Bersamamu</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 14px; justify-content: center;">
+                <button onclick="goToScreen('screen-letter')" style="background: none; border: 1px solid #64748B; color: #CBD5E1; padding: 12px 24px; border-radius: 999px; cursor: pointer;">Kembali ke Surat</button>
+                <button onclick="goToScreen('screen-vouchers')" class="gold-btn">Buka Kupon Hadiah Cinta 🎟️</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 7. SCREEN VOUCHERS (INTERACTIVE LOVE COUPONS)  -->
+    <!-- ============================================== -->
+    <section id="screen-vouchers" class="screen denim-inner-bg" style="flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px;">
+        <div style="max-width: 900px; width: 100%; text-align: center;">
+            <h2 style="font-family: var(--font-serif); font-size: 2.8rem; color: var(--color-gold);">Exclusive Vouchers</h2>
+            <p style="color: #CBD5E1; font-size: 1rem; margin-bottom: 26px;">Kupon berlaku selamanya, ketuk untuk klaim sebagai kado spesial! ❤️</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 30px; text-align: left;">
+                <!-- Voucher 1 -->
+                <div class="glass-box voucher-card" onclick="claimVoucher(this, 'v1')">
+                    <div class="voucher-stamp">TERPAKAI</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="color: var(--color-gold); font-size: 1.2rem; font-weight: 800;">FREE MEAL PASS</h4>
+                            <p style="color: #CBD5E1; font-size: 0.88rem;">Traktir makan sepuasnya 1x pilihanmu</p>
+                            <span class="v-btn" style="display: inline-block; margin-top: 10px; font-size: 0.75rem; background: var(--color-gold); color: #0B2046; padding: 4px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Klaim Kupon</span>
+                        </div>
+                        <div style="font-size: 2.6rem;">🍔</div>
+                    </div>
+                </div>
+
+                <!-- Voucher 2 -->
+                <div class="glass-box voucher-card" onclick="claimVoucher(this, 'v2')">
+                    <div class="voucher-stamp">TERPAKAI</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="color: var(--color-gold); font-size: 1.2rem; font-weight: 800;">MOVIE NIGHT</h4>
+                            <p style="color: #CBD5E1; font-size: 0.88rem;">Nonton bioskop + popcorn pilihanmu</p>
+                            <span class="v-btn" style="display: inline-block; margin-top: 10px; font-size: 0.75rem; background: var(--color-gold); color: #0B2046; padding: 4px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Klaim Kupon</span>
+                        </div>
+                        <div style="font-size: 2.6rem;">🎬</div>
+                    </div>
+                </div>
+
+                <!-- Voucher 3 -->
+                <div class="glass-box voucher-card" onclick="claimVoucher(this, 'v3')">
+                    <div class="voucher-stamp">TERPAKAI</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="color: var(--color-gold); font-size: 1.2rem; font-weight: 800;">FULL DAY PASS</h4>
+                            <p style="color: #CBD5E1; font-size: 0.88rem;">Seharian penuh ditemani tanpa ngambek</p>
+                            <span class="v-btn" style="display: inline-block; margin-top: 10px; font-size: 0.75rem; background: var(--color-gold); color: #0B2046; padding: 4px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Klaim Kupon</span>
+                        </div>
+                        <div style="font-size: 2.6rem;">💖</div>
+                    </div>
+                </div>
+
+                <!-- Voucher 4 -->
+                <div class="glass-box voucher-card" onclick="claimVoucher(this, 'v4')">
+                    <div class="voucher-stamp">TERPAKAI</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="color: var(--color-gold); font-size: 1.2rem; font-weight: 800;">MASSAGE & PAMPER</h4>
+                            <p style="color: #CBD5E1; font-size: 0.88rem;">Pijat pundak santai saat capek kerja</p>
+                            <span class="v-btn" style="display: inline-block; margin-top: 10px; font-size: 0.75rem; background: var(--color-gold); color: #0B2046; padding: 4px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Klaim Kupon</span>
+                        </div>
+                        <div style="font-size: 2.6rem;">💆‍♂️</div>
+                    </div>
+                </div>
+
+                <!-- Voucher 5 -->
+                <div class="glass-box voucher-card" onclick="claimVoucher(this, 'v5')">
+                    <div class="voucher-stamp">TERPAKAI</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="color: var(--color-gold); font-size: 1.2rem; font-weight: 800;">COFFEE & TALK</h4>
+                            <p style="color: #CBD5E1; font-size: 0.88rem;">Ngopi & ngobrol mendalam berdua</p>
+                            <span class="v-btn" style="display: inline-block; margin-top: 10px; font-size: 0.75rem; background: var(--color-gold); color: #0B2046; padding: 4px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Klaim Kupon</span>
+                        </div>
+                        <div style="font-size: 2.6rem;">☕</div>
+                    </div>
+                </div>
+
+                <!-- Voucher 6 -->
+                <div class="glass-box voucher-card" onclick="claimVoucher(this, 'v6')">
+                    <div class="voucher-stamp">TERPAKAI</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="color: var(--color-gold); font-size: 1.2rem; font-weight: 800;">YES TO ANYTHING</h4>
+                            <p style="color: #CBD5E1; font-size: 0.88rem;">Kabulkan 1 permintaan khusus darimu</p>
+                            <span class="v-btn" style="display: inline-block; margin-top: 10px; font-size: 0.75rem; background: var(--color-gold); color: #0B2046; padding: 4px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Klaim Kupon</span>
+                        </div>
+                        <div style="font-size: 2.6rem;">🎁</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 14px; justify-content: center;">
+                <button onclick="goToScreen('screen-memories')" style="background: none; border: 1px solid #64748B; color: #CBD5E1; padding: 12px 24px; border-radius: 999px; cursor: pointer;">Kembali</button>
+                <button onclick="goToScreen('screen-landing')" class="gold-btn">Ulangi Dari Awal ❤️</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- LOGIC & SHAPE OF MY HEART CHORUS SYNTHESIZER   -->
+    <!-- ============================================== -->
+    <script>
+        // Screen Navigation
+        function goToScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Confetti without ANY pink colors (ONLY blue, white, gold)
+            if (screenId === 'screen-pin' || screenId === 'screen-cake') {
+                triggerConfetti();
+            }
+        }
+
+        // Secret Code PIN Check
+        function checkPin(code) {
+            const err = document.getElementById('pin-error');
+            if (code === '2709') {
+                err.style.display = 'none';
+                triggerConfetti();
+                playChime();
+                setTimeout(() => goToScreen('screen-calendar'), 600);
+            } else {
+                err.style.display = 'block';
+                if (navigator.vibrate) navigator.vibrate(200);
+            }
+        }
+
+        // Cake & Candle Blow Interaction
+        let candlesBlown = false;
+        function blowCandles() {
+            if (candlesBlown) return;
+            candlesBlown = true;
+
+            const flames = document.getElementById('candle-flames');
+            const blowBtn = document.getElementById('blow-btn');
+            const wishBox = document.getElementById('wish-box');
+            const cakeSub = document.getElementById('cake-sub');
+
+            if (flames) flames.style.display = 'none';
+            if (blowBtn) {
+                blowBtn.textContent = 'Lilin Padam! Doa Terkabul ✨';
+                blowBtn.style.background = '#475569';
+                blowBtn.style.color = '#CBD5E1';
+                blowBtn.disabled = true;
+            }
+            if (cakeSub) cakeSub.textContent = 'Yeay! Selamat ulang tahun sayang! 🎉';
+            if (wishBox) wishBox.style.display = 'block';
+
+            triggerConfetti();
+            playChime();
+        }
+
+        // Voucher Claiming with LocalStorage
+        function claimVoucher(el, id) {
+            if (!el.classList.contains('claimed')) {
+                el.classList.add('claimed');
+                localStorage.setItem('voucher_' + id, 'true');
+                triggerConfetti();
+                playChime();
+            }
+        }
+
+        // Load Voucher Claim State
+        window.addEventListener('load', () => {
+            ['v1','v2','v3','v4','v5','v6'].forEach((id, idx) => {
+                if (localStorage.getItem('voucher_' + id) === 'true') {
+                    const cards = document.querySelectorAll('.voucher-card');
+                    if (cards[idx]) cards[idx].classList.add('claimed');
+                }
+            });
+        });
+
+        // Confetti Burst - STRICTLY NO PINK! (Shades of blue, soft azure, white, gold only)
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 70,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#FFFFFF', '#93C5FD', '#60A5FA', '#3B82F6', '#D4AF37', '#F6E27A']
+                });
+            }
+        }
+
+        function playChime() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const now = audioCtx.currentTime;
+                [554.37, 659.25, 830.61, 1108.73].forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                    gain.gain.setValueAtTime(0.12, now + i * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + 0.5);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + i * 0.08);
+                    osc.stop(now + i * 0.08 + 0.5);
+                });
+            } catch (e) {}
+        }
+
+        /* ========================================================== */
+        /* STING - "SHAPE OF MY HEART" CHORUS / REFF WEB AUDIO SYNTH  */
+        /* (Authentic nylon acoustic guitar & vocal melody chords)     */
+        /* ========================================================== */
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let synthTimeout = null;
+
+        // Note Frequencies in Hz
+        const N = {
+            'F#2': 92.50, 'G#2': 103.83, 'A2': 110.00, 'B2': 123.47,
+            'C#3': 138.59, 'D3': 146.83, 'E3': 164.81, 'E#3': 174.61, 'F#3': 185.00,
+            'G#3': 207.65, 'A3': 220.00, 'B3': 246.94,
+            'C#4': 277.18, 'D4': 293.66, 'E4': 329.63, 'E#4': 349.23, 'F#4': 369.99,
+            'G#4': 415.30, 'A4': 440.00, 'B4': 493.88,
+            'C#5': 554.37, 'D5': 587.33, 'E5': 659.25, 'F#5': 739.99
+        };
+
+        // Shape of My Heart Chorus Sequence (Lead melody + Acoustic bass & chords)
+        const shapeOfMyHeartReff = [
+            // Intro Hook motif (F#m -> C#m/E -> D -> C#7)
+            { melody: N['C#5'], bass: N['F#2'], harm: N['A3'], dur: 0.45 },
+            { melody: N['B4'],  bass: null,     harm: N['C#4'], dur: 0.35 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['A4'],  bass: N['E2'],  harm: N['G#3'], dur: 0.60 },
+
+            { melody: N['B4'],  bass: null,     harm: N['B3'],  dur: 0.40 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['F#4'], bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['G#4'], bass: N['D2'],  harm: N['F#3'], dur: 0.60 },
+
+            { melody: N['A4'],  bass: null,     harm: N['A3'],  dur: 0.40 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['F#4'], bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['E#4'], bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['F#4'], bass: N['C#2'], harm: N['E#3'], dur: 0.70 },
+
+            // REFF LINE 1: "I know that the spades are the swords of a soldier"
+            { melody: N['F#4'], bass: N['F#2'], harm: N['C#4'], dur: 0.32 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.28 },
+            { melody: N['A4'],  bass: null,     harm: N['A3'],  dur: 0.35 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['F#4'], bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['B4'],  bass: N['E2'],  harm: N['G#3'], dur: 0.75 },
+
+            // REFF LINE 2: "I know that the clubs are weapons of war"
+            { melody: N['B4'],  bass: null,     harm: N['B3'],  dur: 0.32 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.28 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.32 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.28 },
+            { melody: N['B4'],  bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['C#5'], bass: null,     harm: null,     dur: 0.40 },
+            { melody: N['B4'],  bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['G#4'], bass: N['D2'],  harm: N['F#3'], dur: 0.75 },
+
+            // REFF LINE 3: "I know that diamonds mean money for this art"
+            { melody: N['F#4'], bass: null,     harm: N['A3'],  dur: 0.32 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.28 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.32 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.28 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['F#4'], bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.30 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.32 },
+            { melody: N['C#5'], bass: N['C#2'], harm: N['E#3'], dur: 0.80 },
+
+            // REFF LINE 4: "But that's not the shape of my heart"
+            { melody: N['C#5'], bass: null,     harm: N['G#3'], dur: 0.42 },
+            { melody: N['B4'],  bass: null,     harm: null,     dur: 0.36 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.36 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.36 },
+            { melody: N['F#4'], bass: null,     harm: null,     dur: 0.36 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.38 },
+            { melody: N['F#4'], bass: N['F#2'], harm: N['C#4'], dur: 1.10 },
+
+            // TAG: "That's not the shape... the shape of my heart"
+            { melody: N['A4'],  bass: N['D2'],  harm: N['F#3'], dur: 0.45 },
+            { melody: N['G#4'], bass: null,     harm: null,     dur: 0.38 },
+            { melody: N['F#4'], bass: null,     harm: null,     dur: 0.55 },
+            { melody: N['D5'],  bass: N['E2'],  harm: N['G#3'], dur: 0.40 },
+            { melody: N['C#5'], bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['B4'],  bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['A4'],  bass: null,     harm: null,     dur: 0.35 },
+            { melody: N['G#4'], bass: N['C#2'], harm: N['E#3'], dur: 0.60 },
+            { melody: N['F#4'], bass: N['F#2'], harm: N['A3'],  dur: 1.80 }
+        ];
+
+        // Plucked Acoustic String synthesis
+        function playPluckedNote(freq, startTime, duration, volume, isBass = false) {
+            if (!freq || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                // Warm nylon string harmonics (triangle + lowpass filter)
+                osc.type = isBass ? 'triangle' : 'sine';
+                osc.frequency.setValueAtTime(freq, startTime);
+
+                // Filter for acoustic warm pluck
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(isBass ? 800 : 2200, startTime);
+                filter.frequency.exponentialRampToValueAtTime(isBass ? 200 : 600, startTime + duration);
+
+                // Natural pluck envelope: quick attack, natural guitar decay
+                gain.gain.setValueAtTime(0.0001, startTime);
+                gain.gain.linearRampToValueAtTime(volume, startTime + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(startTime);
+                osc.stop(startTime + duration + 0.05);
+            } catch (e) {}
+        }
+
+        let currentNoteIndex = 0;
+        function playNextReffNote() {
+            if (!isMusicPlaying || !audioCtx) return;
+            const item = shapeOfMyHeartReff[currentNoteIndex];
+            const now = audioCtx.currentTime;
+
+            // 1. Lead Melody Note
+            if (item.melody) {
+                playPluckedNote(item.melody, now, item.dur * 1.1, 0.16);
+            }
+            // 2. Harmony Arpeggio
+            if (item.harm) {
+                playPluckedNote(item.harm, now + 0.03, item.dur * 0.9, 0.08);
+            }
+            // 3. Acoustic Bass
+            if (item.bass) {
+                playPluckedNote(item.bass, now, item.dur * 1.5, 0.18, true);
+            }
+
+            currentNoteIndex = (currentNoteIndex + 1) % shapeOfMyHeartReff.length;
+            synthTimeout = setTimeout(playNextReffNote, item.dur * 1000);
+        }
+
+        // Start music player (supports local MP3 or Web Audio Synth)
+        function startMusic() {
+            if (isMusicPlaying) return;
+
+            const bgAudio = document.getElementById('bg-music');
+            const disc = document.getElementById('music-disc');
+            const bars = document.getElementById('sound-bars');
+            const status = document.getElementById('music-status');
+
+            // Try playing HTML5 Audio element first (if shape_of_my_heart.mp3 exists)
+            if (bgAudio && bgAudio.src) {
+                const playPromise = bgAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        isMusicPlaying = true;
+                        if (disc) disc.classList.add('playing');
+                        if (bars) bars.classList.add('playing');
+                        if (status) status.textContent = 'Memutar Lagu 🎶';
+                        return;
+                    }).catch(() => {
+                        // Fallback to Web Audio Synthesizer
+                        startSynthMusic();
+                    });
+                    return;
+                }
+            }
+            startSynthMusic();
+        }
+
+        function startSynthMusic() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            isMusicPlaying = true;
+            const disc = document.getElementById('music-disc');
+            const bars = document.getElementById('sound-bars');
+            const status = document.getElementById('music-status');
+
+            if (disc) disc.classList.add('playing');
+            if (bars) bars.classList.add('playing');
+            if (status) status.textContent = 'Shape of My Heart (Reff) 🎶';
+
+            currentNoteIndex = 0;
+            playNextReffNote();
+        }
+
+        function pauseMusic() {
+            isMusicPlaying = false;
+            const bgAudio = document.getElementById('bg-music');
+            if (bgAudio && !bgAudio.paused) {
+                bgAudio.pause();
+            }
+            if (synthTimeout) clearTimeout(synthTimeout);
+
+            const disc = document.getElementById('music-disc');
+            const bars = document.getElementById('sound-bars');
+            const status = document.getElementById('music-status');
+
+            if (disc) disc.classList.remove('playing');
+            if (bars) bars.classList.remove('playing');
+            if (status) status.textContent = 'Klik untuk putar 🎵';
+        }
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                pauseMusic();
+            } else {
+                startMusic();
+            }
+        }
+
+        // AUTO-PLAY ON ENTER (With graceful browser mobile interaction listener)
+        window.addEventListener('DOMContentLoaded', () => {
+            // Attempt instant start
+            startMusic();
+
+            // Mobile browser user interaction listener (unlocks audio context on first screen touch)
+            const unlockAudio = () => {
+                startMusic();
+                ['click', 'touchstart', 'pointerdown'].forEach(e => {
+                    document.removeEventListener(e, unlockAudio);
+                });
+            };
+            ['click', 'touchstart', 'pointerdown'].forEach(e => {
+                document.addEventListener(e, unlockAudio, { once: true, passive: true });
+            });
+        });
+    </script>
+</body>
+</html>
