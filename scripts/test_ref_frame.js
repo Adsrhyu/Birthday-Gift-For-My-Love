@@ -1,8 +1,6 @@
 import sharp from 'sharp';
-import fs from 'fs';
-import path from 'path';
 
-async function deployAllCleanAssets() {
+async function testComposite() {
   const framePath = 'scripts/vintage_frame_raw.jpg';
   const userPhotoPath = 'C:/Users/asusa/.gemini/antigravity-ide/brain/ecd504f4-b401-4ddc-9cb8-dd37e220ef74/.user_uploaded/media_1790316203910.jpg';
 
@@ -90,7 +88,7 @@ async function deployAllCleanAssets() {
     }
   }
 
-  // 4. Crop and center the couple photo (HD):
+  // 4. Crop and center the couple photo:
   const photo = await sharp(userPhotoPath)
     .extract({ left: 245, top: 90, width: 540, height: 540 })
     .resize(w, h, { fit: 'cover' })
@@ -107,6 +105,7 @@ async function deployAllCleanAssets() {
       const pixelIndex = y * w + x;
 
       if (isOutside[pixelIndex]) {
+        // Transparent outside
         out[idx] = 0;
         out[idx + 1] = 0;
         out[idx + 2] = 0;
@@ -115,6 +114,7 @@ async function deployAllCleanAssets() {
       }
 
       if (isInside[pixelIndex]) {
+        // Inside heart: couple photo
         out[idx] = photo[idx];
         out[idx + 1] = photo[idx + 1];
         out[idx + 2] = photo[idx + 2];
@@ -130,6 +130,7 @@ async function deployAllCleanAssets() {
       const b = frameData[fidx + 2];
       const brightness = (r + g + b) / 3;
 
+      // Map brightness to luminous white / delicate silver tones (230..255)
       const laceWhite = Math.round(230 + (brightness / 255) * 25);
 
       out[idx] = laceWhite;
@@ -139,103 +140,27 @@ async function deployAllCleanAssets() {
     }
   }
 
-  // Generate Master HD Image
-  const masterHeartPath = 'public/heart_lace_hd.png';
+  // Save the master HD frame
   await sharp(out, { raw: { width: w, height: h, channels: 4 } })
     .png({ compressionLevel: 9 })
-    .toFile(masterHeartPath);
+    .toFile('test_vintage_ref_hd.png');
 
-  // Copy to heart_lace_user.png and cover/ paths
-  fs.copyFileSync(masterHeartPath, 'public/heart_lace_user.png');
-  fs.copyFileSync(masterHeartPath, 'public/cover/heart_lace.png');
-  fs.copyFileSync(masterHeartPath, 'public/cover/heart_lace_clean.png');
-  console.log('Saved public/heart_lace_hd.png, heart_lace_user.png, cover/heart_lace.png');
-
-  // Square icons with generous padding and royal blue background (#0d2353)
-  // 512x512
-  const heart512 = await sharp(masterHeartPath).resize(430, 430, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
+  // Preview on blue background (#0d2353)
+  const heartBuf = await sharp('test_vintage_ref_hd.png').toBuffer();
   await sharp({
     create: {
-      width: 512,
-      height: 512,
+      width: 1100,
+      height: 1100,
       channels: 4,
-      background: { r: 13, g: 35, b: 83, alpha: 1 }
+      background: { r: 13, g: 35, b: 83, alpha: 1 } // #0d2353
     }
   })
-  .composite([{ input: heart512, gravity: 'center' }])
+  .composite([{ input: heartBuf, gravity: 'center' }])
   .png()
-  .toFile('public/icon-512.png');
+  .toFile('test_vintage_preview_blue.png');
 
-  // 192x192
-  const heart192 = await sharp(masterHeartPath).resize(162, 162, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
-  await sharp({
-    create: {
-      width: 192,
-      height: 192,
-      channels: 4,
-      background: { r: 13, g: 35, b: 83, alpha: 1 }
-    }
-  })
-  .composite([{ input: heart192, gravity: 'center' }])
-  .png()
-  .toFile('public/icon-192.png');
-
-  // apple-touch-icon.png (180x180)
-  const heart180 = await sharp(masterHeartPath).resize(152, 152, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
-  await sharp({
-    create: {
-      width: 180,
-      height: 180,
-      channels: 4,
-      background: { r: 13, g: 35, b: 83, alpha: 1 }
-    }
-  })
-  .composite([{ input: heart180, gravity: 'center' }])
-  .png()
-  .toFile('public/apple-touch-icon.png');
-
-  // icon.png (512x512)
-  fs.copyFileSync('public/icon-512.png', 'public/icon.png');
-
-  // Generate og-image.png (1200x630) for link preview with royal blue gradient and typography
-  const heartOg = await sharp(masterHeartPath).resize(480, 480, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
-  
-  const textSvg = `
-    <svg width="1200" height="630" viewBox="0 0 1200 630">
-      <defs>
-        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#07142e" />
-          <stop offset="50%" stop-color="#0c2354" />
-          <stop offset="100%" stop-color="#081836" />
-        </linearGradient>
-      </defs>
-      <rect width="1200" height="630" fill="url(#bg)" />
-      
-      <!-- Sparkles / stars -->
-      <polygon points="120,90 123,98 131,101 123,104 120,112 117,104 109,101 117,98" fill="#ffd700" opacity="0.8" />
-      <polygon points="480,140 482,146 488,148 482,150 480,156 478,150 472,148 478,146" fill="#ffffff" opacity="0.8" />
-      <polygon points="180,500 182,506 188,508 182,510 180,516 178,510 172,508 178,506" fill="#ffd700" opacity="0.8" />
-      <polygon points="1100,100 1102,106 1108,108 1102,110 1100,116 1098,110 1092,108 1098,106" fill="#ffffff" opacity="0.8" />
-      <polygon points="1060,520 1063,528 1071,531 1063,534 1060,542 1057,534 1049,531 1057,528" fill="#ffd700" opacity="0.8" />
-
-      <!-- Left Text -->
-      <text x="110" y="240" font-family="'Outfit', -apple-system, sans-serif" font-weight="800" font-size="64" fill="#ffffff" letter-spacing="-1">Happy Birthday,</text>
-      <text x="110" y="325" font-family="'Outfit', -apple-system, sans-serif" font-weight="900" font-size="76" fill="#fcd34d" letter-spacing="-1">My Love Ryan!</text>
-      <text x="110" y="405" font-family="'Playfair Display', Georgia, serif" font-style="italic" font-size="34" fill="#93c5fd">A special gift for a very special person ✨</text>
-    </svg>
-  `;
-
-  await sharp(Buffer.from(textSvg))
-    .composite([{
-      input: heartOg,
-      left: 680,
-      top: 75
-    }])
-    .png()
-    .toFile('public/og-image.png');
-
-  console.log('All public assets successfully created & deployed!');
+  console.log('Saved test_vintage_ref_hd.png and test_vintage_preview_blue.png successfully');
 }
 
-deployAllCleanAssets();
+testComposite();
 
