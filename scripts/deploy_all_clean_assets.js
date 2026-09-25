@@ -3,221 +3,250 @@ import fs from 'fs';
 import path from 'path';
 
 async function deployAllCleanAssets() {
-  const framePath = 'scripts/vintage_frame_raw.jpg';
-  // NEWEST photo — user explicitly said "fotonya tetap jang terbaru, jangan ganti"
-  const userPhotoPath = 'C:/Users/asusa/.gemini/antigravity-ide/brain/ecd504f4-b401-4ddc-9cb8-dd37e220ef74/.user_uploaded/media_1790323812952.png';
+  const framePath = 'scripts/pinterest_frame_orig.jpg';
+  const photoPath = 'couple_main.jpg';
 
-  const { data: rawData, info } = await sharp(framePath).raw().toBuffer({ resolveWithObject: true });
-  const w = info.width, h = info.height;
+  console.log('Processing Pinterest frame and couple photo...');
+  const { data: frameRaw, info } = await sharp(framePath).raw().toBuffer({ resolveWithObject: true });
+  const w = info.width; // 2400
+  const h = info.height; // 2400
 
-  // 1. Create perfectly symmetrical frame data mirrored across heart axis (x = 497)
-  const axis = 497;
-  const frameData = Buffer.alloc(w * h * 3);
+  function getB(idx) {
+    return (frameRaw[idx * 3] + frameRaw[idx * 3 + 1] + frameRaw[idx * 3 + 2]) / 3;
+  }
+
+  // 1. Outside flood fill from all border pixels
+  const isOutside = new Uint8Array(w * h);
+  const queueOut = [];
+  for (let x = 0; x < w; x++) {
+    queueOut.push(x);
+    queueOut.push((h - 1) * w + x);
+    isOutside[x] = 1;
+    isOutside[(h - 1) * w + x] = 1;
+  }
+  for (let y = 0; y < h; y++) {
+    queueOut.push(y * w);
+    queueOut.push(y * w + (w - 1));
+    isOutside[y * w] = 1;
+    isOutside[y * w + (w - 1)] = 1;
+  }
+
+  const initialThreshold = 45;
+  let head = 0;
+  while (head < queueOut.length) {
+    const curr = queueOut[head++];
+    const cx = curr % w;
+    const cy = Math.floor(curr / w);
+
+    const neighbors = [
+      cx + 1 < w ? curr + 1 : -1,
+      cx - 1 >= 0 ? curr - 1 : -1,
+      cy + 1 < h ? curr + w : -1,
+      cy - 1 >= 0 ? curr - w : -1
+    ];
+
+    for (const nidx of neighbors) {
+      if (nidx >= 0 && !isOutside[nidx]) {
+        if (getB(nidx) < initialThreshold) {
+          isOutside[nidx] = 1;
+          queueOut.push(nidx);
+        }
+      }
+    }
+  }
+
+  // 2. Expand outside slightly for boundary pixels < 95 brightness to eliminate dark fringe
+  for (let pass = 0; pass < 2; pass++) {
+    const toAdd = [];
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        const idx = y * w + x;
+        if (!isOutside[idx]) {
+          const hasOut = isOutside[idx + 1] || isOutside[idx - 1] || isOutside[idx + w] || isOutside[idx - w];
+          if (hasOut && getB(idx) < 95) {
+            toAdd.push(idx);
+          }
+        }
+      }
+    }
+    for (const idx of toAdd) isOutside[idx] = 1;
+  }
+
+  // 3. Inside flood fill from center (1200, 1200)
+  const isInside = new Uint8Array(w * h);
+  const queueIn = [1200 * w + 1200];
+  isInside[1200 * w + 1200] = 1;
+  head = 0;
+  while (head < queueIn.length) {
+    const curr = queueIn[head++];
+    const cx = curr % w;
+    const cy = Math.floor(curr / w);
+
+    const neighbors = [
+      cx + 1 < w ? curr + 1 : -1,
+      cx - 1 >= 0 ? curr - 1 : -1,
+      cy + 1 < h ? curr + w : -1,
+      cy - 1 >= 0 ? curr - w : -1
+    ];
+
+    for (const nidx of neighbors) {
+      if (nidx >= 0 && !isInside[nidx] && !isOutside[nidx]) {
+        if (getB(nidx) < 22) {
+          isInside[nidx] = 1;
+          queueIn.push(nidx);
+        }
+      }
+    }
+  }
+
+  // 4. Standalone pure transparent frame (without photo)
+  const pureFrameBuf = Buffer.alloc(w * h * 4);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      const idx = (y * w + x) * 3;
-      let srcX = x;
-      if (x > axis) {
-        srcX = axis - (x - axis);
+      const idx = y * w + x;
+      const cidx = idx * 4;
+      const fidx = idx * 3;
+
+      if (isOutside[idx] || isInside[idx]) {
+        pureFrameBuf[cidx] = 0;
+        pureFrameBuf[cidx + 1] = 0;
+        pureFrameBuf[cidx + 2] = 0;
+        pureFrameBuf[cidx + 3] = 0;
+        continue;
       }
-      if (srcX < 0) srcX = 0;
-      const sidx = (y * w + srcX) * 3;
-      frameData[idx] = rawData[sidx];
-      frameData[idx + 1] = rawData[sidx + 1];
-      frameData[idx + 2] = rawData[sidx + 2];
-    }
-  }
 
-  // 2. Outside flood fill from corners:
-  const isOutside = new Uint8Array(w * h);
-  const queueOut = [0, w - 1, (h - 1) * w, (h - 1) * w + (w - 1)];
-  for (const q of queueOut) isOutside[q] = 1;
+      const nearOut = (x > 0 && isOutside[idx - 1]) || 
+                      (x < w - 1 && isOutside[idx + 1]) || 
+                      (y > 0 && isOutside[idx - w]) || 
+                      (y < h - 1 && isOutside[idx + w]);
 
-  while (queueOut.length > 0) {
-    const curr = queueOut.pop();
-    const cx = curr % w;
-    const cy = Math.floor(curr / w);
+      const fr = frameRaw[fidx];
+      const fg = frameRaw[fidx + 1];
+      const fb = frameRaw[fidx + 2];
+      const b = (fr + fg + fb) / 3;
 
-    const neighbors = [
-      [cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]
-    ];
-
-    for (const [nx, ny] of neighbors) {
-      if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-        const nidx = ny * w + nx;
-        if (!isOutside[nidx]) {
-          const r = frameData[nidx * 3];
-          const g = frameData[nidx * 3 + 1];
-          const b = frameData[nidx * 3 + 2];
-          const brightness = (r + g + b) / 3;
-          if (brightness < 45) {
-            isOutside[nidx] = 1;
-            queueOut.push(nidx);
-          }
-        }
+      if (nearOut && b < 160) {
+        const alphaNorm = Math.min(1.0, Math.max(0.0, (b - 80) / (160 - 80)));
+        pureFrameBuf[cidx] = Math.round(fr * (1 - alphaNorm) + 245 * alphaNorm);
+        pureFrameBuf[cidx + 1] = Math.round(fg * (1 - alphaNorm) + 245 * alphaNorm);
+        pureFrameBuf[cidx + 2] = Math.round(fb * (1 - alphaNorm) + 248 * alphaNorm);
+        pureFrameBuf[cidx + 3] = Math.round(alphaNorm * 255);
+      } else {
+        pureFrameBuf[cidx] = fr;
+        pureFrameBuf[cidx + 1] = fg;
+        pureFrameBuf[cidx + 2] = fb;
+        pureFrameBuf[cidx + 3] = 255;
       }
     }
   }
 
-  // 3. Inside flood fill from center (512, 512)
-  const isInside = new Uint8Array(w * h);
-  const centerIdx = 512 * w + 512;
-  const queueIn = [centerIdx];
-  isInside[centerIdx] = 1;
-
-  while (queueIn.length > 0) {
-    const curr = queueIn.pop();
-    const cx = curr % w;
-    const cy = Math.floor(curr / w);
-
-    const neighbors = [
-      [cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]
-    ];
-
-    for (const [nx, ny] of neighbors) {
-      if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-        const nidx = ny * w + nx;
-        if (!isInside[nidx] && !isOutside[nidx]) {
-          const r = frameData[nidx * 3];
-          const g = frameData[nidx * 3 + 1];
-          const b = frameData[nidx * 3 + 2];
-          const brightness = (r + g + b) / 3;
-          if (brightness < 45) {
-            isInside[nidx] = 1;
-            queueIn.push(nidx);
-          }
-        }
-      }
-    }
-  }
-
-  // 4. Read and crop user photo to fit heart shape
-  const photo = await sharp(userPhotoPath)
-    .resize(w, h, { fit: 'cover', position: 'centre' })
-    .ensureAlpha()
+  // 5. Crop and scale couple photo to fit heart opening
+  // couple_main.jpg is 864 x 1152
+  const photoCropped = await sharp(photoPath)
+    .extract({ left: 0, top: 110, width: 864, height: 864 })
+    .resize(1540, 1540, { fit: 'fill' })
     .raw()
     .toBuffer();
 
-  const out = Buffer.alloc(w * h * 4);
+  const photoW = 1540;
+  const photoH = 1540;
+  const photoX = Math.round(1175 - photoW / 2);
+  const photoY = Math.round(1330 - photoH / 2);
 
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const idx = (y * w + x) * 4;
-      const fidx = (y * w + x) * 3;
-      const pixelIndex = y * w + x;
+  const compositeBuf = Buffer.alloc(w * h * 4);
 
-      if (isOutside[pixelIndex]) {
-        // Transparent outside
-        out[idx] = 0;
-        out[idx + 1] = 0;
-        out[idx + 2] = 0;
-        out[idx + 3] = 0;
-        continue;
+  // Fill photo canvas
+  for (let py = 0; py < photoH; py++) {
+    for (let px = 0; px < photoW; px++) {
+      const targetX = photoX + px;
+      const targetY = photoY + py;
+      if (targetX >= 0 && targetX < w && targetY >= 0 && targetY < h) {
+        const cidx = (targetY * w + targetX) * 4;
+        const pidx = (py * photoW + px) * 3;
+        compositeBuf[cidx] = photoCropped[pidx];
+        compositeBuf[cidx + 1] = photoCropped[pidx + 1];
+        compositeBuf[cidx + 2] = photoCropped[pidx + 2];
+        compositeBuf[cidx + 3] = 255;
       }
-
-      if (isInside[pixelIndex]) {
-        // Photo visible inside
-        out[idx] = photo[idx];
-        out[idx + 1] = photo[idx + 1];
-        out[idx + 2] = photo[idx + 2];
-        out[idx + 3] = 255;
-        continue;
-      }
-
-      // LACE AREA — preserve original lace detail faithfully
-      // Match reference: white scalloped outer border with visible dark lace details
-      const r = frameData[fidx];
-      const g = frameData[fidx + 1];
-      const b = frameData[fidx + 2];
-      const brightness = (r + g + b) / 3;
-
-      // Keep original lace tones — white stays white, dark patterns stay dark
-      // This matches the reference which shows clear black/dark lace detail inside white scallops
-      out[idx] = r;
-      out[idx + 1] = g;
-      out[idx + 2] = b;
-      out[idx + 3] = 255;
     }
   }
 
-  // Generate Master HD Image (without bow — we'll composite bow on top)
-  const masterNobow = await sharp(out, { raw: { width: w, height: h, channels: 4 } })
-    .png({ compressionLevel: 9 })
-    .toBuffer();
+  // Composite frame on top of photo
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const idx = y * w + x;
+      const cidx = idx * 4;
+      const fidx = idx * 3;
 
-  // 5. Create Pink Bow SVG and composite on top center
-  const bowWidth = Math.round(w * 0.16);
-  const bowHeight = Math.round(bowWidth * 0.62);
-  const bowSvg = `
-    <svg width="${bowWidth}" height="${bowHeight}" viewBox="0 0 120 74" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="bowLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#F9B4C2"/>
-          <stop offset="50%" stop-color="#F2A0B0"/>
-          <stop offset="100%" stop-color="#E88DA0"/>
-        </linearGradient>
-        <linearGradient id="bowRight" x1="100%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#F9B4C2"/>
-          <stop offset="50%" stop-color="#F2A0B0"/>
-          <stop offset="100%" stop-color="#E88DA0"/>
-        </linearGradient>
-        <radialGradient id="bowKnot" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#F2A0B0"/>
-          <stop offset="100%" stop-color="#D88898"/>
-        </radialGradient>
-      </defs>
-      <!-- Left loop -->
-      <ellipse cx="36" cy="30" rx="32" ry="22" fill="url(#bowLeft)" transform="rotate(-12,36,30)"/>
-      <!-- Right loop -->
-      <ellipse cx="84" cy="30" rx="32" ry="22" fill="url(#bowRight)" transform="rotate(12,84,30)"/>
-      <!-- Center knot -->
-      <ellipse cx="60" cy="33" rx="12" ry="14" fill="url(#bowKnot)"/>
-      <!-- Left ribbon tail -->
-      <path d="M 48 42 C 38 58, 24 64, 18 72" stroke="#E88DA0" stroke-width="7" fill="none" stroke-linecap="round"/>
-      <!-- Right ribbon tail -->
-      <path d="M 72 42 C 82 58, 96 64, 102 72" stroke="#E88DA0" stroke-width="7" fill="none" stroke-linecap="round"/>
-      <!-- Subtle highlight on left loop -->
-      <ellipse cx="30" cy="24" rx="14" ry="8" fill="rgba(255,255,255,0.25)" transform="rotate(-15,30,24)"/>
-      <!-- Subtle highlight on right loop -->
-      <ellipse cx="90" cy="24" rx="14" ry="8" fill="rgba(255,255,255,0.2)" transform="rotate(15,90,24)"/>
-    </svg>
-  `;
+      if (isOutside[idx]) {
+        compositeBuf[cidx] = 0;
+        compositeBuf[cidx + 1] = 0;
+        compositeBuf[cidx + 2] = 0;
+        compositeBuf[cidx + 3] = 0;
+        continue;
+      }
 
-  const bowPng = await sharp(Buffer.from(bowSvg))
-    .png()
-    .toBuffer();
+      if (isInside[idx]) {
+        // Just the photo
+        continue;
+      }
 
-  // Find the top center of the heart for bow placement
-  // The heart's top dip is around y ~75-110 area, x centered around axis
-  const bowLeft = Math.round(axis - bowWidth / 2);
-  const bowTop = Math.round(h * 0.10); // Place at the heart's top dip, overlapping the lace
+      const nearOut = (x > 0 && isOutside[idx - 1]) || 
+                      (x < w - 1 && isOutside[idx + 1]) || 
+                      (y > 0 && isOutside[idx - w]) || 
+                      (y < h - 1 && isOutside[idx + w]);
 
+      const fr = frameRaw[fidx];
+      const fg = frameRaw[fidx + 1];
+      const fb = frameRaw[fidx + 2];
+      const b = (fr + fg + fb) / 3;
+
+      if (nearOut && b < 160) {
+        const alphaNorm = Math.min(1.0, Math.max(0.0, (b - 80) / (160 - 80)));
+        compositeBuf[cidx] = Math.round(fr * (1 - alphaNorm) + 245 * alphaNorm);
+        compositeBuf[cidx + 1] = Math.round(fg * (1 - alphaNorm) + 245 * alphaNorm);
+        compositeBuf[cidx + 2] = Math.round(fb * (1 - alphaNorm) + 248 * alphaNorm);
+        compositeBuf[cidx + 3] = Math.round(alphaNorm * 255);
+      } else {
+        compositeBuf[cidx] = fr;
+        compositeBuf[cidx + 1] = fg;
+        compositeBuf[cidx + 2] = fb;
+        compositeBuf[cidx + 3] = 255;
+      }
+    }
+  }
+
+  // 6. Save HD master composite (frame + photo)
   const masterHeartPath = 'public/heart_lace_hd.png';
-  await sharp(masterNobow)
-    .composite([{
-      input: bowPng,
-      left: bowLeft,
-      top: bowTop
-    }])
+  await sharp(compositeBuf, { raw: { width: w, height: h, channels: 4 } })
+    .resize(1200, 1200)
     .png({ compressionLevel: 9 })
     .toFile(masterHeartPath);
 
-  // Copy to other paths
   fs.copyFileSync(masterHeartPath, 'public/heart_lace_user.png');
-  
-  // Ensure cover directory exists
-  if (!fs.existsSync('public/cover')) {
-    fs.mkdirSync('public/cover', { recursive: true });
-  }
-  fs.copyFileSync(masterHeartPath, 'public/cover/heart_lace.png');
-  fs.copyFileSync(masterHeartPath, 'public/cover/heart_lace_clean.png');
-  console.log('Saved public/heart_lace_hd.png, heart_lace_user.png, cover/heart_lace.png');
-
-  // Also copy to root for backward compatibility
   fs.copyFileSync(masterHeartPath, 'heart_lace_hd.png');
   fs.copyFileSync(masterHeartPath, 'heart_lace_user.png');
 
-  // Square icons with generous padding and royal blue background (#0d2353)
+  // 7. Save standalone transparent frame
+  if (!fs.existsSync('public/cover')) {
+    fs.mkdirSync('public/cover', { recursive: true });
+  }
+  const pureFramePath = 'public/heart_lace.png';
+  await sharp(pureFrameBuf, { raw: { width: w, height: h, channels: 4 } })
+    .resize(1200, 1200)
+    .png({ compressionLevel: 9 })
+    .toFile(pureFramePath);
+
+  fs.copyFileSync(pureFramePath, 'public/heart_lace_clean.png');
+  fs.copyFileSync(pureFramePath, 'public/cover/heart_lace.png');
+  fs.copyFileSync(pureFramePath, 'public/cover/heart_lace_clean.png');
+  fs.copyFileSync(pureFramePath, 'heart_lace.png');
+  fs.copyFileSync(pureFramePath, 'heart_lace_clean.png');
+
+  // 8. Update public/couple_main.jpg with high-res couple photo
+  fs.copyFileSync(photoPath, 'public/couple_main.jpg');
+
+  // 9. Square icons with generous padding and royal blue background (#0d2353)
   // 512x512
   const heart512 = await sharp(masterHeartPath).resize(430, 430, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
   await sharp({
@@ -260,10 +289,9 @@ async function deployAllCleanAssets() {
   .png()
   .toFile('public/apple-touch-icon.png');
 
-  // icon.png (512x512)
   fs.copyFileSync('public/icon-512.png', 'public/icon.png');
 
-  // Generate og-image.png (1200x630) for link preview with royal blue gradient and typography
+  // 10. Generate og-image.png (1200x630) for social link preview
   const heartOg = await sharp(masterHeartPath).resize(480, 480, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
   
   const textSvg = `
@@ -300,7 +328,7 @@ async function deployAllCleanAssets() {
     .png()
     .toFile('public/og-image.png');
 
-  console.log('All public assets successfully created & deployed!');
+  console.log('✅ ALL ASSETS GENERATED & DEPLOYED FROM PINTEREST FRAME SUCCESSFULLY!');
 }
 
-deployAllCleanAssets();
+deployAllCleanAssets().catch(console.error);
