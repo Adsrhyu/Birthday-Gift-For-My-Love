@@ -30,32 +30,33 @@ export default function ScreenMemories({ onNext, onBack }) {
       padding: '40px 16px 60px 16px',
       position: 'relative'
     }}>
-      {/* Glowing frame styles */}
+      {/* High-performance aesthetic photo card styling (Lag-free 60fps) */}
       <style>{`
-        @keyframes frameGlowAnimation {
-          0%, 100% {
-            box-shadow: 0 0 12px rgba(246, 226, 122, 0.45), 0 0 24px rgba(212, 175, 55, 0.25), 0 10px 25px rgba(0, 0, 0, 0.65);
-            border-color: rgba(246, 226, 122, 0.65);
-          }
-          50% {
-            box-shadow: 0 0 18px rgba(255, 243, 191, 0.75), 0 0 32px rgba(246, 226, 122, 0.45), 0 12px 28px rgba(0, 0, 0, 0.75);
-            border-color: rgba(255, 243, 191, 0.9);
-          }
-        }
         .glowing-photo-card {
-          animation: frameGlowAnimation 3s ease-in-out infinite;
-          border: 1.5px solid rgba(246, 226, 122, 0.65);
+          border: 1.5px solid rgba(246, 226, 122, 0.7);
           background: #0d1e38;
           border-radius: 8px;
           position: relative;
           cursor: pointer;
-          transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), 0 0 12px rgba(212, 175, 55, 0.3);
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+          transform: translate3d(0, 0, 0);
+          will-change: transform;
+          content-visibility: auto;
+          contain-intrinsic-size: 180px 240px;
         }
         .glowing-photo-card:hover {
-          transform: translateY(-8px) scale(1.07) rotate(0deg) !important;
-          box-shadow: 0 0 25px rgba(255, 243, 191, 0.95), 0 0 45px rgba(246, 226, 122, 0.7), 0 20px 40px rgba(0, 0, 0, 0.85) !important;
+          transform: translateY(-6px) scale(1.05) rotate(0deg) !important;
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7), 0 0 22px rgba(255, 243, 191, 0.85) !important;
           border-color: #FFF3BF !important;
           z-index: 25;
+        }
+        .glowing-photo-card img {
+          transition: transform 0.35s ease;
+          will-change: transform;
+        }
+        .glowing-photo-card:hover img {
+          transform: scale(1.06);
         }
       `}</style>
 
@@ -129,18 +130,12 @@ export default function ScreenMemories({ onNext, onBack }) {
                   src={m.image}
                   alt={`Memory ${m.id}`}
                   loading="lazy"
+                  decoding="async"
                   style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    display: 'block',
-                    transition: 'transform 0.4s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.08)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
+                    display: 'block'
                   }}
                 />
               </div>

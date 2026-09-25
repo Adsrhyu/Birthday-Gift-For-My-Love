@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, RotateCcw, CheckCircle2, Sparkles, Heart, Gift } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { burstOutlineHearts } from '../utils/heartBurst';
 import { romanticSynth } from '../utils/audioSynth';
 
 const DAY_ACTIVITIES = [
@@ -40,6 +40,7 @@ const BONUS_REWARDS = [
     title: 'Bonus Pijatan selama 10 Menit',
     icon: '💆‍♂️✨',
     category: 'Relaksasi Spesial',
+    validity: 'Hanya hari ini',
     description: 'Pijatan lembut dan relaksasi pundak serta punggung selama 10 menit penuh saat kamu merasa lelah setelah seharian beraktivitas.'
   },
   {
@@ -47,6 +48,7 @@ const BONUS_REWARDS = [
     title: 'Bonus Pelukan Hangat dari Aku',
     icon: '🤗❤️',
     category: 'Unlimited Love',
+    validity: 'Berlaku Selamanya',
     description: 'Pelukan hangat paling tulus, nyaman, dan menenangkan kapanpun kamu butuh tempat bersandar, berlaku selamanya tanpa batas waktu.'
   }
 ];
@@ -72,12 +74,7 @@ export default function ScreenVouchers({ onBack, onRestart }) {
 
   const handleToggleActivity = (act) => {
     romanticSynth.playStampSound();
-    confetti({
-      particleCount: 40,
-      spread: 60,
-      origin: { y: 0.65 },
-      colors: ['#D4AF37', '#F6E27A', '#38BDF8']
-    });
+    burstOutlineHearts(window.innerWidth / 2, window.innerHeight * 0.65);
 
     const isDone = !!completedActivities[act.id];
     const updated = {
@@ -97,12 +94,7 @@ export default function ScreenVouchers({ onBack, onRestart }) {
     if (claimedBonuses[bonus.id]) return;
 
     romanticSynth.playStampSound();
-    confetti({
-      particleCount: 65,
-      spread: 75,
-      origin: { y: 0.7 },
-      colors: ['#F6E27A', '#D4AF37', '#EF4444', '#10B981']
-    });
+    burstOutlineHearts(window.innerWidth / 2, window.innerHeight * 0.7);
 
     const now = new Date();
     const dateStr = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
@@ -348,12 +340,12 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                       {isDone ? (
                         <>
                           <CheckCircle2 size={16} />
-                          <span>Siap & Terlaksana ❤️</span>
+                          <span>Berhasil Dilaksanakan ❤️</span>
                         </>
                       ) : (
                         <>
                           <Sparkles size={15} />
-                          <span>Tandai Siap Dilakukan ✨</span>
+                          <span>Lakukan Sekarang ✨</span>
                         </>
                       )}
                     </button>
@@ -527,11 +519,16 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                     )}
 
                     <span style={{
-                      fontSize: '0.72rem',
-                      color: '#94A3B8',
-                      fontStyle: 'italic'
+                      fontSize: '0.74rem',
+                      color: bonus.id === 'massage-bonus' ? '#FDE047' : '#94A3B8',
+                      fontWeight: bonus.id === 'massage-bonus' ? '700' : '500',
+                      fontStyle: 'italic',
+                      background: bonus.id === 'massage-bonus' ? 'rgba(253, 224, 71, 0.12)' : 'transparent',
+                      padding: bonus.id === 'massage-bonus' ? '3px 8px' : '0',
+                      borderRadius: '6px',
+                      border: bonus.id === 'massage-bonus' ? '1px solid rgba(253, 224, 71, 0.3)' : 'none'
                     }}>
-                      Berlaku Selamanya
+                      Masa Berlaku: {bonus.validity}
                     </span>
                   </div>
                 </div>
