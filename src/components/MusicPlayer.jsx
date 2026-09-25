@@ -38,14 +38,14 @@ export default function MusicPlayer() {
       playAudio();
     };
 
-    const unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown'];
+    const unlockEvents = ['touchstart', 'touchend', 'touchmove', 'pointerdown', 'pointermove', 'mousedown', 'click', 'scroll', 'keydown'];
     unlockEvents.forEach((evt) => {
       window.addEventListener(evt, unlockOnGesture, { capture: true, passive: true });
       document.addEventListener(evt, unlockOnGesture, { capture: true, passive: true });
     });
 
     return () => {
-      ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown', 'scroll', 'keydown'].forEach((evt) => {
+      unlockEvents.forEach((evt) => {
         window.removeEventListener(evt, unlockOnGesture, { capture: true });
         document.removeEventListener(evt, unlockOnGesture, { capture: true });
       });
