@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { ArrowLeft, ArrowRight, Sparkles, Wind, RotateCcw } from 'lucide-react';
-import { burstCelebrationHearts } from '../utils/heartBurst';
+import { burstCelebrationStars } from '../utils/heartBurst';
 import { romanticSynth } from '../utils/audioSynth';
 
 export default function ScreenCake({ onNext, onBack, config }) {
@@ -16,7 +16,7 @@ export default function ScreenCake({ onNext, onBack, config }) {
     // Audio chime
     romanticSynth.playCelebrationChime();
 
-    // Taburan love polos tanpa isi (celebratory hollow outline hearts burst)
+    // Taburan bintang putih polos tanpa isi (celebratory hollow outline white stars burst)
     let originX = window.innerWidth / 2;
     let originY = window.innerHeight * 0.42;
 
@@ -26,7 +26,7 @@ export default function ScreenCake({ onNext, onBack, config }) {
       originY = rect.top + rect.height * 0.28; // right where the candle flames are
     }
 
-    burstCelebrationHearts(originX, originY);
+    burstCelebrationStars(originX, originY);
   };
 
   const handleRelight = () => {
