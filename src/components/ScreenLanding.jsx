@@ -60,6 +60,37 @@ export default function ScreenLanding({ onNext, config }) {
           50% { transform: translateY(-6px) rotate(-19deg); }
         }
 
+        /* Paper Airplane flying around the Heart Frame and returning home */
+        @keyframes airplaneOrbitHeart {
+          0%, 14% {
+            transform: translate3d(0, 0, 0) rotate(338deg) scale(1);
+          }
+          19% {
+            transform: translate3d(14vw, -1.8vh, 0) rotate(352deg) scale(1.05);
+          }
+          30% {
+            transform: translate3d(36vw, -3vh, 0) rotate(376deg) scale(1.08);
+          }
+          43% {
+            transform: translate3d(60vw, 0vh, 0) rotate(408deg) scale(1.1);
+          }
+          56% {
+            transform: translate3d(79vw, 14vh, 0) rotate(465deg) scale(1.1);
+          }
+          69% {
+            transform: translate3d(60vw, 29vh, 0) rotate(535deg) scale(1.08);
+          }
+          80% {
+            transform: translate3d(36vw, 15vh, 0) rotate(600deg) scale(1.05);
+          }
+          91% {
+            transform: translate3d(10vw, 3vh, 0) rotate(665deg) scale(1.02);
+          }
+          97%, 100% {
+            transform: translate3d(0, 0, 0) rotate(698deg) scale(1);
+          }
+        }
+
         /* Desktop and Tablet landscape responsive refinement */
         @media (min-width: 769px) {
           .cover-heart-container {
@@ -218,8 +249,7 @@ export default function ScreenLanding({ onNext, config }) {
       </div>
 
       {/* ========================================================== */}
-      {/* 3. PAPER AIRPLANE FLYING CLOSE TOWARDS HEART FRAME         */}
-      {/* Distance is kept close and connected with swooping trail   */}
+      {/* 3. PAPER AIRPLANE FLYING AROUND THE LOVE FRAME & RETURNING */}
       {/* ========================================================== */}
       <div
         className="cover-airplane-container"
@@ -227,35 +257,18 @@ export default function ScreenLanding({ onNext, config }) {
           position: 'absolute',
           top: 'clamp(24px, 4.4vh, 48px)',
           left: 'clamp(20px, 6vw, 65px)',
-          zIndex: 12,
+          zIndex: 22,
           pointerEvents: 'none'
         }}
       >
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          {/* Origami Airplane */}
-          <svg
-            width="46"
-            height="46"
-            viewBox="0 0 64 64"
-            fill="none"
-            style={{
-              animation: 'gentleAirplaneFloat 3.8s ease-in-out infinite',
-              filter: 'drop-shadow(0 6px 10px rgba(0,0,0,0.45))'
-            }}
-          >
-            <path d="M6 32 L58 6 L36 58 L28 36 Z" fill="#FFFFFF" />
-            <path d="M28 36 L58 6 L36 58" fill="#E2E8F0" />
-            <path d="M28 36 L36 46 L40 36" fill="#CBD5E1" />
-            <line x1="28" y1="36" x2="58" y2="6" stroke="#94A3B8" strokeWidth="1.2" />
-          </svg>
-
-          {/* Dotted Flight Trail (Curves gracefully towards Heart Frame) */}
+        {/* Base Static Trail on Denim Runway */}
+        <div style={{ position: 'absolute', top: 0, left: 0, display: 'flex', alignItems: 'center' }}>
           <svg
             width="120"
             height="48"
             viewBox="0 0 120 48"
             fill="none"
-            style={{ marginLeft: '-8px', marginTop: '10px', opacity: 0.95 }}
+            style={{ marginLeft: '38px', marginTop: '10px', opacity: 0.9 }}
           >
             <path
               d="M 6 24 C 30 42, 55 10, 85 24 C 102 32, 112 18, 118 24"
@@ -266,16 +279,48 @@ export default function ScreenLanding({ onNext, config }) {
           </svg>
         </div>
 
-        {/* Soft Blue Floating Mini Hearts / Stars near Airplane (NO PINK) */}
-        <div style={{ position: 'absolute', top: '36px', left: '10px' }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#93C5FD">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
-        </div>
-        <div style={{ position: 'absolute', top: '16px', left: '56px' }}>
+        {/* Soft Blue Floating Mini Heart on the Static Trail */}
+        <div style={{ position: 'absolute', top: '16px', left: '56px', opacity: 0.95 }}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="#93C5FD">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
           </svg>
+        </div>
+
+        {/* Dynamic Flying Paper Airplane Unit that orbits around the Heart Frame */}
+        <div
+          className="airplane-flying-unit"
+          style={{
+            position: 'relative',
+            width: '46px',
+            height: '46px',
+            display: 'inline-block',
+            animation: 'airplaneOrbitHeart 8.8s cubic-bezier(0.42, 0, 0.58, 1) infinite',
+            transformOrigin: '23px 23px',
+            willChange: 'transform'
+          }}
+        >
+          {/* Origami Airplane */}
+          <svg
+            width="46"
+            height="46"
+            viewBox="0 0 64 64"
+            fill="none"
+            style={{
+              filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.55))'
+            }}
+          >
+            <path d="M6 32 L58 6 L36 58 L28 36 Z" fill="#FFFFFF" />
+            <path d="M28 36 L58 6 L36 58" fill="#E2E8F0" />
+            <path d="M28 36 L36 46 L40 36" fill="#CBD5E1" />
+            <line x1="28" y1="36" x2="58" y2="6" stroke="#94A3B8" strokeWidth="1.2" />
+          </svg>
+
+          {/* Accompanying Sweet Mini Heart Flying with Airplane */}
+          <div style={{ position: 'absolute', bottom: '-4px', left: '-2px' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#93C5FD" style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.4))' }}>
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </div>
         </div>
       </div>
 
