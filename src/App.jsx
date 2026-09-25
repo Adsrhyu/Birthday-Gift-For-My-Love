@@ -26,14 +26,14 @@ export default function App() {
       return {
         partnerName: 'Sayangku',
         pin: '3112',
-        mainPhoto: '/couple_main.jpg',
+        mainPhoto: './couple_main.jpg',
         letterContent: ''
       };
     } catch {
       return {
         partnerName: 'Sayangku',
         pin: '3112',
-        mainPhoto: '/couple_main.jpg',
+        mainPhoto: './couple_main.jpg',
         letterContent: ''
       };
     }

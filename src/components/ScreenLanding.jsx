@@ -226,7 +226,7 @@ export default function ScreenLanding({ onNext, config }) {
             />
           ) : (
             <img
-              src={config?.mainPhoto || '/couple_main.jpg'}
+              src={config?.mainPhoto || './couple_main.jpg'}
               alt="Couple"
               style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
             />

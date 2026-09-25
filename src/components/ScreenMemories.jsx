@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Camera, X } from 'lucide-react';
 
 const MEMORIES = [
-  { id: 1, image: '/couple_main.jpg', rotation: '-2deg' },
-  { id: 2, image: '/couple_memory_1.jpg', rotation: '1.8deg' },
-  { id: 3, image: '/all_img_2.jpg', rotation: '-2.2deg' },
-  { id: 4, image: '/couple_memory_2.jpg', rotation: '2.5deg' },
-  { id: 5, image: '/all_img_4.jpg', rotation: '-1.5deg' },
-  { id: 6, image: '/couple_memory_3.jpg', rotation: '1.5deg' },
-  { id: 7, image: '/all_img_6.jpg', rotation: '-2deg' },
-  { id: 8, image: '/couple_memory_4.jpg', rotation: '2deg' },
-  { id: 9, image: '/all_img_9.jpg', rotation: '-1.8deg' },
-  { id: 10, image: '/couple_memory_5.jpg', rotation: '1.6deg' },
-  { id: 11, image: '/couple_memory_6.jpg', rotation: '-1.2deg' },
-  { id: 12, image: '/couple_memory_7.jpg', rotation: '2.2deg' }
+  { id: 1, image: './couple_main.jpg', rotation: '-2deg' },
+  { id: 2, image: './couple_memory_1.jpg', rotation: '1.8deg' },
+  { id: 3, image: './all_img_2.jpg', rotation: '-2.2deg' },
+  { id: 4, image: './couple_memory_2.jpg', rotation: '2.5deg' },
+  { id: 5, image: './all_img_4.jpg', rotation: '-1.5deg' },
+  { id: 6, image: './couple_memory_3.jpg', rotation: '1.5deg' },
+  { id: 7, image: './all_img_6.jpg', rotation: '-2deg' },
+  { id: 8, image: './couple_memory_4.jpg', rotation: '2deg' },
+  { id: 9, image: './all_img_9.jpg', rotation: '-1.8deg' },
+  { id: 10, image: './couple_memory_5.jpg', rotation: '1.6deg' },
+  { id: 11, image: './couple_memory_6.jpg', rotation: '-1.2deg' },
+  { id: 12, image: './couple_memory_7.jpg', rotation: '2.2deg' }
 ];
 
 export default function ScreenMemories({ onNext, onBack }) {
