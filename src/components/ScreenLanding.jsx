@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { burstOutlineHearts } from '../utils/heartBurst';
+import { burstCelebrationStars } from '../utils/heartBurst';
 
 export default function ScreenLanding({ onNext, config }) {
   const [photoError, setPhotoError] = useState(false);
@@ -13,10 +13,10 @@ export default function ScreenLanding({ onNext, config }) {
       originY = rect.top + rect.height / 2;
     }
 
-    // Taburan love polos tanpa isi (hollow outline hearts burst)
-    burstOutlineHearts(originX, originY);
+    // Taburan bintang putih polos tanpa isi (celebratory hollow outline white stars burst)
+    burstCelebrationStars(originX, originY);
 
-    // Beri sedikit jeda agar letupan love terlihat indah sebelum berpindah
+    // Beri sedikit jeda agar letupan bintang terlihat indah sebelum berpindah
     setTimeout(() => {
       onNext();
     }, 450);
