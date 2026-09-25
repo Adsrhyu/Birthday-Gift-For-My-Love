@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const AUDIO_SRC = '/birthday_sound.mp3';
+const AUDIO_SRC = './birthday_sound.mp3';
 
 export default function MusicPlayer() {
   const audioRef = useRef(null);
