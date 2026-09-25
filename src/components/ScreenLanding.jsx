@@ -13,6 +13,11 @@ export default function ScreenLanding({ onNext, config }) {
       originY = rect.top + rect.height / 2;
     }
 
+    // Langsung putar musik jika belum berputar
+    if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
+      window.__playBirthdayMusic();
+    }
+
     // Taburan bintang putih polos tanpa isi (celebratory hollow outline white stars burst)
     burstCelebrationStars(originX, originY);
 
@@ -186,13 +191,20 @@ export default function ScreenLanding({ onNext, config }) {
         >
           {!photoError ? (
             <img
-              src="/heart_lace_hd.png?v=pinterest_ref_v1"
+              src="/heart_lace_hd.png?v=pinterest_v5"
               alt="Our Sweet Memory"
               onError={() => setPhotoError(true)}
+              onClick={() => {
+                if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
+                  window.__playBirthdayMusic();
+                }
+              }}
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'contain'
+                objectFit: 'contain',
+                imageRendering: '-webkit-optimize-contrast',
+                willChange: 'transform'
               }}
             />
           ) : (
