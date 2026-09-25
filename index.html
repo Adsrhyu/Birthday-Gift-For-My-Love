@@ -41,33 +41,50 @@
     
     <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <script type="module" crossorigin src="./assets/index-3l3-N2cz.js"></script>
+  <script type="module" crossorigin src="./assets/index-CdxhgM-y.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-DtGv-Z03.css">
 </head>
 <body>
     <!-- 🎵 Instant Auto-Play Audio (Starts immediately upon clicking/entering web) -->
-    <audio id="birthday-audio" src="./birthday_sound.mp3" autoplay playsinline loop preload="auto" style="display:none;"></audio>
+    <audio id="birthday-audio" src="./birthday_sound.mp3" autoplay playsinline loop preload="auto" style="position:fixed;top:-100px;left:-100px;width:1px;height:1px;opacity:0.001;pointer-events:none;"></audio>
     <script>
       (function() {
         var audio = document.getElementById('birthday-audio');
         if (!audio) return;
         audio.volume = 0.85;
 
-        // 1. Immediate trigger right at HTML parse time
         var startPlay = function() {
           if (!audio) return;
+          audio.muted = false;
+          audio.volume = 0.85;
           var p = audio.play();
           if (p !== undefined) {
-            p.catch(function(e) {
+            p.then(function() {
+              console.log('Unmuted autoplay active!');
+            }).catch(function(e) {
               console.log('Autoplay waiting for initial touch:', e.message);
+              // Warm pipeline muted so playback starts instantly on first touch
+              try {
+                audio.muted = true;
+                audio.play().catch(function(){});
+              } catch(err) {}
             });
           }
         };
 
-        window.__playBirthdayMusic = startPlay;
+        window.__playBirthdayMusic = function() {
+          if (!audio) return;
+          audio.muted = false;
+          audio.volume = 0.85;
+          if (audio.paused) {
+            audio.play().catch(function(e) {
+              console.log('play error:', e);
+            });
+          }
+        };
         window.__birthdayAudio = audio;
 
-        // Try playing immediately
+        // Try unmuted play immediately
         startPlay();
 
         ['DOMContentLoaded', 'load', 'pageshow', 'focus'].forEach(function(evt) {
@@ -77,22 +94,18 @@
           if (document.visibilityState === 'visible') startPlay();
         });
 
-        // 2. Immediate unlock on ANY user touch / tap / click / scroll anywhere on the screen
-        var unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown', 'scroll', 'keydown'];
+        // Immediate unlock on ANY user touch / tap / click anywhere on the screen
+        var unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown'];
         var unlockHandler = function() {
-          startPlay();
-          unlockEvents.forEach(function(evt) {
-            window.removeEventListener(evt, unlockHandler, true);
-            document.removeEventListener(evt, unlockHandler, true);
-          });
+          window.__playBirthdayMusic();
         };
 
         unlockEvents.forEach(function(evt) {
-          window.addEventListener(evt, unlockHandler, { once: true, capture: true, passive: true });
-          document.addEventListener(evt, unlockHandler, { once: true, capture: true, passive: true });
+          window.addEventListener(evt, unlockHandler, { capture: true, passive: true });
+          document.addEventListener(evt, unlockHandler, { capture: true, passive: true });
         });
 
-        // 3. Prevent unsolicited Chrome PWA install banners
+        // Prevent unsolicited Chrome PWA install banners
         window.addEventListener('beforeinstallprompt', function(e) {
           e.preventDefault();
         });
