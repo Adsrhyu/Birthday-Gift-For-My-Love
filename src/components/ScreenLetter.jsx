@@ -181,7 +181,7 @@ export default function ScreenLetter({ onNext, onBack, config }) {
                     Sayangku tercinta,
                   </h3>
                   <span style={{ fontSize: '0.8rem', color: '#64748B' }}>
-                    Special Birthday Edition ✨
+                    Special Birthday Ryan ✨
                   </span>
                 </div>
 
@@ -234,7 +234,7 @@ Jangan lupa istirahat kalau capek ya. Kamu selalu punya aku di sini. Happy birth
                 </p>
                 <p style={{
                   fontFamily: 'var(--font-cursive)',
-                  fontSize: '1.8rem',
+                  fontSize: '1.35rem',
                   color: '#0B2046',
                   fontWeight: '700',
                   marginTop: '2px'

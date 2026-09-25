@@ -4,21 +4,16 @@ import { ArrowLeft, ArrowRight, Camera, X } from 'lucide-react';
 const MEMORIES = [
   { id: 1, image: '/couple_main.jpg', rotation: '-2deg' },
   { id: 2, image: '/couple_memory_1.jpg', rotation: '1.8deg' },
-  { id: 3, image: '/all_img_1.jpg', rotation: '-1.5deg' },
+  { id: 3, image: '/all_img_2.jpg', rotation: '-2.2deg' },
   { id: 4, image: '/couple_memory_2.jpg', rotation: '2.5deg' },
-  { id: 5, image: '/all_img_2.jpg', rotation: '-2.2deg' },
-  { id: 6, image: '/couple_memory_3.jpg', rotation: '1.2deg' },
-  { id: 7, image: '/all_img_3.jpg', rotation: '-1.8deg' },
+  { id: 5, image: '/all_img_4.jpg', rotation: '-1.5deg' },
+  { id: 6, image: '/couple_memory_3.jpg', rotation: '1.5deg' },
+  { id: 7, image: '/all_img_6.jpg', rotation: '-2deg' },
   { id: 8, image: '/couple_memory_4.jpg', rotation: '2deg' },
-  { id: 9, image: '/all_img_4.jpg', rotation: '-2.5deg' },
-  { id: 10, image: '/couple_memory_5.jpg', rotation: '1.5deg' },
-  { id: 11, image: '/all_img_5.jpg', rotation: '-1.2deg' },
-  { id: 12, image: '/couple_memory_6.jpg', rotation: '2.2deg' },
-  { id: 13, image: '/all_img_6.jpg', rotation: '-2deg' },
-  { id: 14, image: '/couple_memory_7.jpg', rotation: '1.6deg' },
-  { id: 15, image: '/all_img_7.jpg', rotation: '-1.5deg' },
-  { id: 16, image: '/all_img_8.jpg', rotation: '2.4deg' },
-  { id: 17, image: '/all_img_9.jpg', rotation: '-2.1deg' }
+  { id: 9, image: '/all_img_9.jpg', rotation: '-1.8deg' },
+  { id: 10, image: '/couple_memory_5.jpg', rotation: '1.6deg' },
+  { id: 11, image: '/couple_memory_6.jpg', rotation: '-1.2deg' },
+  { id: 12, image: '/couple_memory_7.jpg', rotation: '2.2deg' }
 ];
 
 export default function ScreenMemories({ onNext, onBack }) {
@@ -35,6 +30,35 @@ export default function ScreenMemories({ onNext, onBack }) {
       padding: '40px 16px 60px 16px',
       position: 'relative'
     }}>
+      {/* Glowing frame styles */}
+      <style>{`
+        @keyframes frameGlowAnimation {
+          0%, 100% {
+            box-shadow: 0 0 12px rgba(246, 226, 122, 0.45), 0 0 24px rgba(212, 175, 55, 0.25), 0 10px 25px rgba(0, 0, 0, 0.65);
+            border-color: rgba(246, 226, 122, 0.65);
+          }
+          50% {
+            box-shadow: 0 0 18px rgba(255, 243, 191, 0.75), 0 0 32px rgba(246, 226, 122, 0.45), 0 12px 28px rgba(0, 0, 0, 0.75);
+            border-color: rgba(255, 243, 191, 0.9);
+          }
+        }
+        .glowing-photo-card {
+          animation: frameGlowAnimation 3s ease-in-out infinite;
+          border: 1.5px solid rgba(246, 226, 122, 0.65);
+          background: #0d1e38;
+          border-radius: 8px;
+          position: relative;
+          cursor: pointer;
+          transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .glowing-photo-card:hover {
+          transform: translateY(-8px) scale(1.07) rotate(0deg) !important;
+          box-shadow: 0 0 25px rgba(255, 243, 191, 0.95), 0 0 45px rgba(246, 226, 122, 0.7), 0 20px 40px rgba(0, 0, 0, 0.85) !important;
+          border-color: #FFF3BF !important;
+          z-index: 25;
+        }
+      `}</style>
+
       <div style={{
         maxWidth: '1080px',
         width: '100%',
@@ -53,9 +77,9 @@ export default function ScreenMemories({ onNext, onBack }) {
             fontSize: '0.85rem',
             letterSpacing: '2px',
             textTransform: 'uppercase',
-            fontWeight: '600'
+            fontWeight: '700'
           }}>
-            <Camera size={16} /> Photo Scrapbook
+            <Camera size={16} /> ADE SRI & RYAN
           </span>
           <h2 style={{
             fontFamily: 'var(--font-serif)',
@@ -75,33 +99,31 @@ export default function ScreenMemories({ onNext, onBack }) {
         {/* Aesthetic Scrapbook Collage Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(130px, 26vw, 180px), 1fr))',
-          gap: '16px',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(135px, 28vw, 195px), 1fr))',
+          gap: '18px',
           width: '100%',
           padding: '12px 4px 20px 4px'
         }}>
           {MEMORIES.map((m) => (
             <div
               key={m.id}
-              className="masculine-polaroid"
+              className="glowing-photo-card"
               style={{
                 transform: `rotate(${m.rotation})`,
-                cursor: 'pointer',
-                padding: '8px 8px 12px 8px',
-                transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                padding: '8px 8px 12px 8px'
               }}
               onClick={() => setActiveModal(m)}
             >
               {/* Cute Washi Tape at Top */}
-              <div className="washi-tape" style={{ width: '42px', height: '14px', top: '-7px' }} />
+              <div className="washi-tape" style={{ width: '44px', height: '14px', top: '-7px' }} />
 
-              {/* Photo Frame (no caption) */}
+              {/* Photo Frame (no caption, glowing aesthetic) */}
               <div style={{
                 position: 'relative',
                 aspectRatio: '4 / 5',
                 overflow: 'hidden',
                 borderRadius: '4px',
-                background: '#0B1B36'
+                background: '#07152b'
               }}>
                 <img
                   src={m.image}
@@ -184,8 +206,8 @@ export default function ScreenMemories({ onNext, onBack }) {
                   maxHeight: '84vh',
                   objectFit: 'contain',
                   borderRadius: '12px',
-                  border: '2px solid rgba(212, 175, 55, 0.5)',
-                  boxShadow: '0 25px 60px rgba(0,0,0,0.85)'
+                  border: '2px solid rgba(246, 226, 122, 0.7)',
+                  boxShadow: '0 0 30px rgba(246, 226, 122, 0.5), 0 25px 60px rgba(0,0,0,0.85)'
                 }}
               />
             </div>
