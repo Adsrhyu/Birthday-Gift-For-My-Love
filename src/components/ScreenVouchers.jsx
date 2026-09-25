@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { ArrowLeft, RotateCcw, CheckCircle2, Sparkles, Heart, Gift, Clock } from 'lucide-react';
+import { ArrowLeft, RotateCcw, CheckCircle2, Sparkles, Heart, Gift } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { romanticSynth } from '../utils/audioSynth';
 
 const DAY_ACTIVITIES = [
   {
     id: 'jogging',
-    time: 'Pagi Hari • 06:30 WIB',
     title: 'Jogging Date',
     icon: '🏃‍♂️🌿',
     tag: 'Sehat & Semangat',
@@ -14,7 +13,6 @@ const DAY_ACTIVITIES = [
   },
   {
     id: 'cooking',
-    time: 'Siang Hari • 11:30 WIB',
     title: 'Cooking Date',
     icon: '🍳👩‍🍳',
     tag: 'Dapur Penuh Tawa',
@@ -22,7 +20,6 @@ const DAY_ACTIVITIES = [
   },
   {
     id: 'movie',
-    time: 'Sore Hari • 16:00 WIB',
     title: 'Movie Date',
     icon: '🎬🍿',
     tag: 'Santai & Seru',
@@ -30,7 +27,6 @@ const DAY_ACTIVITIES = [
   },
   {
     id: 'skripsi',
-    time: 'Malam Hari • 19:30 WIB',
     title: 'Skripsi Date',
     icon: '📚✍️',
     tag: 'Full Support & Cinta',
@@ -216,7 +212,7 @@ export default function ScreenVouchers({ onBack, onRestart }) {
               alignItems: 'center',
               gap: '8px'
             }}>
-              <Clock size={19} color="var(--color-gold-light)" />
+              <Sparkles size={19} color="var(--color-gold-light)" />
               <span>Agenda Seharian Kita</span>
             </h3>
             <span style={{
@@ -260,7 +256,7 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                     transition: 'all 0.3s ease'
                   }}
                 >
-                  {/* Top Bar with Number & Time */}
+                  {/* Top Bar with Number & Tag */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{
@@ -269,17 +265,11 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                         color: 'var(--color-gold)',
                         background: 'rgba(212, 175, 55, 0.15)',
                         border: '1px solid rgba(246, 226, 122, 0.25)',
-                        padding: '3px 8px',
-                        borderRadius: '6px'
+                        padding: '3px 10px',
+                        borderRadius: '6px',
+                        letterSpacing: '0.5px'
                       }}>
-                        {`0${index + 1}`}
-                      </span>
-                      <span style={{
-                        fontSize: '0.76rem',
-                        color: '#93C5FD',
-                        fontWeight: '600'
-                      }}>
-                        {act.time}
+                        {`Kegiatan 0${index + 1}`}
                       </span>
                     </div>
 
