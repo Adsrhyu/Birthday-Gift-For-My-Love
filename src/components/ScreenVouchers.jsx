@@ -350,12 +350,6 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                         </>
                       )}
                     </button>
-
-                    {isDone && (
-                      <span style={{ fontSize: '0.75rem', color: '#34D399', fontWeight: '600' }}>
-                        Tersimpan di Jadwal
-                      </span>
-                    )}
                   </div>
                 </div>
               );
@@ -489,6 +483,8 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '10px',
                     borderTop: '1px dashed rgba(212, 175, 55, 0.25)',
                     paddingTop: '12px'
                   }}>
@@ -507,11 +503,13 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                           boxShadow: '0 4px 12px rgba(212, 175, 55, 0.35)',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '6px'
+                          gap: '6px',
+                          whiteSpace: 'nowrap',
+                          flexShrink: 0
                         }}
                       >
                         <Heart size={15} fill="#0B2046" />
-                        <span>Klaim Bonus Ini</span>
+                        <span style={{ whiteSpace: 'nowrap' }}>Klaim Bonus Ini</span>
                       </button>
                     ) : (
                       <span style={{
@@ -520,7 +518,9 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                         fontWeight: '700',
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '6px'
+                        gap: '6px',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0
                       }}>
                         <CheckCircle2 size={16} /> Diklaim tgl {claimedBonuses[bonus.id]?.claimedAt} ❤️
                       </span>
@@ -534,7 +534,9 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                       background: bonus.id === 'massage-bonus' ? 'rgba(253, 224, 71, 0.12)' : 'transparent',
                       padding: bonus.id === 'massage-bonus' ? '3px 8px' : '0',
                       borderRadius: '6px',
-                      border: bonus.id === 'massage-bonus' ? '1px solid rgba(253, 224, 71, 0.3)' : 'none'
+                      border: bonus.id === 'massage-bonus' ? '1px solid rgba(253, 224, 71, 0.3)' : 'none',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0
                     }}>
                       Masa Berlaku: {bonus.validity}
                     </span>

@@ -172,7 +172,7 @@ export default function ScreenLanding({ onNext, config }) {
           style={{
             width: '100%',
             height: '100%',
-            filter: 'drop-shadow(0 14px 30px rgba(0,0,0,0.72))',
+            filter: 'drop-shadow(0 0 16px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 32px rgba(246, 226, 122, 0.8)) drop-shadow(0 0 50px rgba(212, 175, 55, 0.5)) drop-shadow(0 14px 28px rgba(0,0,0,0.7))',
             animation: 'gentleHeartFloat 4.5s ease-in-out infinite',
             cursor: 'pointer',
             transition: 'transform 0.4s var(--ease-spring)'
