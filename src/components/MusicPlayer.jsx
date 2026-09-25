@@ -18,9 +18,11 @@ export default function MusicPlayer() {
 
     const playAudio = () => {
       if (!audio) return;
+      audio.muted = false;
+      audio.volume = 0.85;
       if (audio.paused) {
         audio.play().catch((err) => {
-          console.log('Audio autoplay waiting for initial user interaction:', err.message);
+          console.log('Audio autoplay waiting for user interaction:', err.message);
         });
       }
     };
@@ -34,15 +36,12 @@ export default function MusicPlayer() {
     // Universal unlock on any user interaction anywhere on the screen
     const unlockOnGesture = () => {
       playAudio();
-      ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown', 'scroll', 'keydown'].forEach((evt) => {
-        window.removeEventListener(evt, unlockOnGesture, { capture: true });
-        document.removeEventListener(evt, unlockOnGesture, { capture: true });
-      });
     };
 
-    ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown', 'scroll', 'keydown'].forEach((evt) => {
-      window.addEventListener(evt, unlockOnGesture, { once: true, capture: true, passive: true });
-      document.addEventListener(evt, unlockOnGesture, { once: true, capture: true, passive: true });
+    const unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown'];
+    unlockEvents.forEach((evt) => {
+      window.addEventListener(evt, unlockOnGesture, { capture: true, passive: true });
+      document.addEventListener(evt, unlockOnGesture, { capture: true, passive: true });
     });
 
     return () => {

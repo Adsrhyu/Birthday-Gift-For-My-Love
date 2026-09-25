@@ -1,8 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { burstCelebrationStars } from '../utils/heartBurst';
 
 export default function ScreenLanding({ onNext, config }) {
   const [photoError, setPhotoError] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(() => {
+    if (typeof document !== 'undefined') {
+      const audio = document.getElementById('birthday-audio');
+      return audio ? !audio.paused && !audio.muted : false;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const audio = document.getElementById('birthday-audio');
+    if (!audio) return;
+
+    const checkPlayState = () => {
+      setIsPlaying(!audio.paused && !audio.muted);
+    };
+
+    audio.addEventListener('play', checkPlayState);
+    audio.addEventListener('playing', checkPlayState);
+    audio.addEventListener('pause', checkPlayState);
+    audio.addEventListener('volumechange', checkPlayState);
+
+    checkPlayState();
+
+    return () => {
+      audio.removeEventListener('play', checkPlayState);
+      audio.removeEventListener('playing', checkPlayState);
+      audio.removeEventListener('pause', checkPlayState);
+      audio.removeEventListener('volumechange', checkPlayState);
+    };
+  }, []);
+
+  const handleScreenTap = (e) => {
+    // Let Open The Gift button handle its own event
+    if (e && e.target && e.target.closest && e.target.closest('#btn-open-gift')) {
+      return;
+    }
+
+    if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
+      window.__playBirthdayMusic();
+    }
+
+    // Gentle star burst on tap if music was not playing yet
+    if (!isPlaying) {
+      let x = window.innerWidth / 2;
+      let y = window.innerHeight * 0.4;
+      if (e && e.clientX) {
+        x = e.clientX;
+        y = e.clientY;
+      } else if (e && e.touches && e.touches[0]) {
+        x = e.touches[0].clientX;
+        y = e.touches[0].clientY;
+      }
+      burstCelebrationStars(x, y);
+    }
+  };
 
   const handleOpenGift = (e) => {
     let originX = window.innerWidth / 2;
@@ -13,7 +68,7 @@ export default function ScreenLanding({ onNext, config }) {
       originY = rect.top + rect.height / 2;
     }
 
-    // Langsung putar musik jika belum berputar
+    // Pastikan musik menyala
     if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
       window.__playBirthdayMusic();
     }
@@ -21,29 +76,17 @@ export default function ScreenLanding({ onNext, config }) {
     // Taburan bintang putih polos tanpa isi (celebratory hollow outline white stars burst)
     burstCelebrationStars(originX, originY);
 
-    // Beri sedikit jeda agar letupan bintang terlihat indah sebelum berpindah
+    // Beri jeda agar letupan bintang terlihat indah sebelum berpindah
     setTimeout(() => {
       onNext();
-    }, 450);
+    }, 550);
   };
 
   return (
     <div
-      onClick={() => {
-        if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
-          window.__playBirthdayMusic();
-        }
-      }}
-      onTouchStart={() => {
-        if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
-          window.__playBirthdayMusic();
-        }
-      }}
-      onPointerDown={() => {
-        if (typeof window !== 'undefined' && typeof window.__playBirthdayMusic === 'function') {
-          window.__playBirthdayMusic();
-        }
-      }}
+      onClick={handleScreenTap}
+      onTouchStart={handleScreenTap}
+      onPointerDown={handleScreenTap}
       style={{
         position: 'relative',
         width: '100vw',
@@ -88,6 +131,16 @@ export default function ScreenLanding({ onNext, config }) {
           0%, 100% { transform: translateY(0px) rotate(-22deg); }
           50% { transform: translateY(-6px) rotate(-19deg); }
         }
+        @keyframes gentlePillPulse {
+          0%, 100% {
+            transform: translateX(-50%) scale(1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 16px rgba(255,255,255,0.25);
+          }
+          50% {
+            transform: translateX(-50%) scale(1.04);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255,255,255,0.5);
+          }
+        }
 
         /* Desktop and Tablet landscape responsive refinement */
         @media (min-width: 769px) {
@@ -115,8 +168,44 @@ export default function ScreenLanding({ onNext, config }) {
           .cover-text-group p {
             font-size: clamp(2.4rem, 3.2vw, 3.4rem) !important;
           }
-        }
       `}</style>
+
+      {/* Gentle Floating Hint to Tap Screen for Music (Fades out when music plays) */}
+      {!isPlaying && (
+        <div
+          onClick={handleScreenTap}
+          onTouchStart={handleScreenTap}
+          style={{
+            position: 'absolute',
+            top: 'clamp(14px, 2.4vh, 22px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 60,
+            background: 'rgba(13, 59, 132, 0.85)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1.5px solid rgba(255, 255, 255, 0.65)',
+            borderRadius: '9999px',
+            padding: '7px 18px',
+            color: '#FFFFFF',
+            fontFamily: "'Outfit', 'Inter', sans-serif",
+            fontSize: 'clamp(0.82rem, 2.7vw, 0.96rem)',
+            fontWeight: '600',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(255, 255, 255, 0.35)',
+            animation: 'gentlePillPulse 2.2s ease-in-out infinite',
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+            transition: 'opacity 0.4s ease'
+          }}
+        >
+          <span style={{ fontSize: '1.1rem' }}>✨</span>
+          <span>Ketuk layar untuk memutar lagu</span>
+          <span style={{ fontSize: '1.1rem' }}>🎵</span>
+        </div>
+      )}
 
       {/* ========================================================== */}
       {/* 1. TORN DENIM RIGHT PANEL & EXACT DASHED STITCH SEAM       */}
@@ -368,6 +457,7 @@ export default function ScreenLanding({ onNext, config }) {
         {/* Open The Gift Button with Paper Airplane Pointer below */}
         <div style={{ marginTop: 'clamp(14px, 2.2vh, 22px)', zIndex: 18, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '6px' }}>
           <button
+            id="btn-open-gift"
             onClick={handleOpenGift}
             style={{
               background: '#FFFFFF',
