@@ -41,7 +41,7 @@
     
     <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <script type="module" crossorigin src="./assets/index-CdxhgM-y.js"></script>
+  <script type="module" crossorigin src="./assets/index-BV8LYSSw.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-DtGv-Z03.css">
 </head>
 <body>
@@ -84,18 +84,30 @@
         };
         window.__birthdayAudio = audio;
 
-        // Try unmuted play immediately
+        // Attempt playback immediately and on every page lifecycle event
         startPlay();
 
-        ['DOMContentLoaded', 'load', 'pageshow', 'focus'].forEach(function(evt) {
+        ['DOMContentLoaded', 'load', 'pageshow', 'focus', 'readystatechange'].forEach(function(evt) {
           window.addEventListener(evt, startPlay, { passive: true });
+          document.addEventListener(evt, startPlay, { passive: true });
         });
         document.addEventListener('visibilitychange', function() {
           if (document.visibilityState === 'visible') startPlay();
         });
 
-        // Immediate unlock on ANY user touch / tap / click anywhere on the screen
-        var unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown'];
+        // Continuous retry polling every 120ms for the first 6 seconds
+        var attempts = 0;
+        var retryTimer = setInterval(function() {
+          attempts++;
+          if (!audio || (!audio.paused && !audio.muted) || attempts > 50) {
+            clearInterval(retryTimer);
+            return;
+          }
+          startPlay();
+        }, 120);
+
+        // Broad passive unlock on any finger movement / touch / scroll anywhere
+        var unlockEvents = ['touchstart', 'touchend', 'touchmove', 'pointerdown', 'pointermove', 'mousedown', 'click', 'scroll', 'keydown'];
         var unlockHandler = function() {
           window.__playBirthdayMusic();
         };
