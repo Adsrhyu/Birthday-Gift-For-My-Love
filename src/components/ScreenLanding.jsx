@@ -191,7 +191,7 @@ export default function ScreenLanding({ onNext, config }) {
         >
           {!photoError ? (
             <img
-              src="/heart_lace_hd.png?v=pinterest_v5"
+              src="/heart_lace_hd.png?v=mountain_v1"
               alt="Our Sweet Memory"
               onError={() => setPhotoError(true)}
               onClick={() => {
