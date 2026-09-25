@@ -218,9 +218,10 @@ export default function ScreenVouchers({ onBack, onRestart }) {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
             gap: '20px',
-            width: '100%'
+            width: '100%',
+            boxSizing: 'border-box'
           }}>
             {DAY_ACTIVITIES.map((act, index) => {
               const isDone = !!completedActivities[act.id];
@@ -365,12 +366,14 @@ export default function ScreenVouchers({ onBack, onRestart }) {
         {/* Section 2: Tambahan Bonus Spesial */}
         <div style={{
           width: '100%',
-          marginTop: '12px',
+          maxWidth: '920px',
+          margin: '12px auto 0 auto',
           background: 'linear-gradient(145deg, rgba(20, 39, 70, 0.85) 0%, rgba(10, 24, 46, 0.95) 100%)',
           border: '1.5px solid rgba(246, 226, 122, 0.45)',
           borderRadius: '20px',
-          padding: '28px 24px',
-          boxShadow: '0 12px 35px rgba(0,0,0,0.45), inset 0 0 25px rgba(212, 175, 55, 0.08)'
+          padding: 'clamp(20px, 4vw, 28px) clamp(16px, 3.5vw, 24px)',
+          boxShadow: '0 12px 35px rgba(0,0,0,0.45), inset 0 0 25px rgba(212, 175, 55, 0.08)',
+          boxSizing: 'border-box'
         }}>
           {/* Bonus Header */}
           <div style={{ textAlign: 'center', marginBottom: '22px' }}>
@@ -408,8 +411,11 @@ export default function ScreenVouchers({ onBack, onRestart }) {
           {/* 2 Bonus Cards Grid */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '18px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+            gap: '18px',
+            width: '100%',
+            justifyContent: 'center',
+            boxSizing: 'border-box'
           }}>
             {BONUS_REWARDS.map((bonus) => {
               const isClaimed = !!claimedBonuses[bonus.id];
@@ -428,7 +434,9 @@ export default function ScreenVouchers({ onBack, onRestart }) {
                     justifyContent: 'space-between',
                     gap: '12px',
                     boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    width: '100%',
+                    boxSizing: 'border-box'
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
