@@ -15,16 +15,24 @@ export default function App() {
   const [config, setConfig] = useState(() => {
     try {
       const saved = localStorage.getItem('birthday_gift_config');
-      return saved ? JSON.parse(saved) : {
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.pin === '2709') {
+          parsed.pin = '3112';
+          localStorage.setItem('birthday_gift_config', JSON.stringify(parsed));
+        }
+        return parsed;
+      }
+      return {
         partnerName: 'Sayangku',
-        pin: '2709',
+        pin: '3112',
         mainPhoto: '/couple_main.jpg',
         letterContent: ''
       };
     } catch {
       return {
         partnerName: 'Sayangku',
-        pin: '2709',
+        pin: '3112',
         mainPhoto: '/couple_main.jpg',
         letterContent: ''
       };

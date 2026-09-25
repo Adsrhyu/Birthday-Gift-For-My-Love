@@ -12,7 +12,7 @@ export default function ScreenPin({ onNext, onBack, config }) {
   const [showPinPad, setShowPinPad] = useState(false); // shows numeric pad after correct date
 
   const CORRECT_DATE = '3112';
-  const CORRECT_PIN = config?.pin || '3112'; // PIN matches user config or special date
+  const CORRECT_PIN = (config?.pin && config.pin !== '2709') ? config.pin : '3112'; // PIN is 3112
 
   // Sparse floating white outline hearts
   const hearts = useMemo(() => {

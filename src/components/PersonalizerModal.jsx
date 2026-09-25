@@ -4,7 +4,7 @@ import { Settings, X, Save, Image, Key, User, FileText, Check } from 'lucide-rea
 export default function PersonalizerModal({ config, onSaveConfig }) {
   const [isOpen, setIsOpen] = useState(false);
   const [partnerName, setPartnerName] = useState(config.partnerName || 'Sayangku');
-  const [pin, setPin] = useState(config.pin || '2709');
+  const [pin, setPin] = useState(config.pin === '2709' ? '3112' : (config.pin || '3112'));
   const [letterContent, setLetterContent] = useState(config.letterContent || '');
   const [mainPhoto, setMainPhoto] = useState(config.mainPhoto || '');
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -156,7 +156,7 @@ export default function PersonalizerModal({ config, onSaveConfig }) {
                   maxLength={4}
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
-                  placeholder="2709"
+                  placeholder="3112"
                   style={{
                     width: '100%',
                     padding: '10px 14px',
