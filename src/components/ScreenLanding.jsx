@@ -186,7 +186,7 @@ export default function ScreenLanding({ onNext, config }) {
         >
           {!photoError ? (
             <img
-              src="/heart_lace_hd.png?v=vintage_ref"
+              src="/heart_lace_hd.png?v=ref_bow_v2"
               alt="Our Sweet Memory"
               onError={() => setPhotoError(true)}
               style={{

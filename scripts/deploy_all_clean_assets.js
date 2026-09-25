@@ -4,7 +4,8 @@ import path from 'path';
 
 async function deployAllCleanAssets() {
   const framePath = 'scripts/vintage_frame_raw.jpg';
-  const userPhotoPath = 'C:/Users/asusa/.gemini/antigravity-ide/brain/ecd504f4-b401-4ddc-9cb8-dd37e220ef74/.user_uploaded/media_1790316203910.jpg';
+  // NEWEST photo — user explicitly said "fotonya tetap jang terbaru, jangan ganti"
+  const userPhotoPath = 'C:/Users/asusa/.gemini/antigravity-ide/brain/ecd504f4-b401-4ddc-9cb8-dd37e220ef74/.user_uploaded/media_1790323812952.png';
 
   const { data: rawData, info } = await sharp(framePath).raw().toBuffer({ resolveWithObject: true });
   const w = info.width, h = info.height;
@@ -90,10 +91,9 @@ async function deployAllCleanAssets() {
     }
   }
 
-  // 4. Crop and center the couple photo (HD):
+  // 4. Read and crop user photo to fit heart shape
   const photo = await sharp(userPhotoPath)
-    .extract({ left: 245, top: 90, width: 540, height: 540 })
-    .resize(w, h, { fit: 'cover' })
+    .resize(w, h, { fit: 'cover', position: 'centre' })
     .ensureAlpha()
     .raw()
     .toBuffer();
@@ -107,6 +107,7 @@ async function deployAllCleanAssets() {
       const pixelIndex = y * w + x;
 
       if (isOutside[pixelIndex]) {
+        // Transparent outside
         out[idx] = 0;
         out[idx + 1] = 0;
         out[idx + 2] = 0;
@@ -115,6 +116,7 @@ async function deployAllCleanAssets() {
       }
 
       if (isInside[pixelIndex]) {
+        // Photo visible inside
         out[idx] = photo[idx];
         out[idx + 1] = photo[idx + 1];
         out[idx + 2] = photo[idx + 2];
@@ -122,34 +124,98 @@ async function deployAllCleanAssets() {
         continue;
       }
 
-      // In the lace:
-      // Pure clean white & silver-white embossed lace
-      // ZERO black / dark colors ("jangan ada warna hitamnya")
+      // LACE AREA — preserve original lace detail faithfully
+      // Match reference: white scalloped outer border with visible dark lace details
       const r = frameData[fidx];
       const g = frameData[fidx + 1];
       const b = frameData[fidx + 2];
       const brightness = (r + g + b) / 3;
 
-      const laceWhite = Math.round(230 + (brightness / 255) * 25);
-
-      out[idx] = laceWhite;
-      out[idx + 1] = laceWhite;
-      out[idx + 2] = Math.min(255, laceWhite + 2);
+      // Keep original lace tones — white stays white, dark patterns stay dark
+      // This matches the reference which shows clear black/dark lace detail inside white scallops
+      out[idx] = r;
+      out[idx + 1] = g;
+      out[idx + 2] = b;
       out[idx + 3] = 255;
     }
   }
 
-  // Generate Master HD Image
+  // Generate Master HD Image (without bow — we'll composite bow on top)
+  const masterNobow = await sharp(out, { raw: { width: w, height: h, channels: 4 } })
+    .png({ compressionLevel: 9 })
+    .toBuffer();
+
+  // 5. Create Pink Bow SVG and composite on top center
+  const bowWidth = Math.round(w * 0.16);
+  const bowHeight = Math.round(bowWidth * 0.62);
+  const bowSvg = `
+    <svg width="${bowWidth}" height="${bowHeight}" viewBox="0 0 120 74" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bowLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F9B4C2"/>
+          <stop offset="50%" stop-color="#F2A0B0"/>
+          <stop offset="100%" stop-color="#E88DA0"/>
+        </linearGradient>
+        <linearGradient id="bowRight" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#F9B4C2"/>
+          <stop offset="50%" stop-color="#F2A0B0"/>
+          <stop offset="100%" stop-color="#E88DA0"/>
+        </linearGradient>
+        <radialGradient id="bowKnot" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#F2A0B0"/>
+          <stop offset="100%" stop-color="#D88898"/>
+        </radialGradient>
+      </defs>
+      <!-- Left loop -->
+      <ellipse cx="36" cy="30" rx="32" ry="22" fill="url(#bowLeft)" transform="rotate(-12,36,30)"/>
+      <!-- Right loop -->
+      <ellipse cx="84" cy="30" rx="32" ry="22" fill="url(#bowRight)" transform="rotate(12,84,30)"/>
+      <!-- Center knot -->
+      <ellipse cx="60" cy="33" rx="12" ry="14" fill="url(#bowKnot)"/>
+      <!-- Left ribbon tail -->
+      <path d="M 48 42 C 38 58, 24 64, 18 72" stroke="#E88DA0" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <!-- Right ribbon tail -->
+      <path d="M 72 42 C 82 58, 96 64, 102 72" stroke="#E88DA0" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <!-- Subtle highlight on left loop -->
+      <ellipse cx="30" cy="24" rx="14" ry="8" fill="rgba(255,255,255,0.25)" transform="rotate(-15,30,24)"/>
+      <!-- Subtle highlight on right loop -->
+      <ellipse cx="90" cy="24" rx="14" ry="8" fill="rgba(255,255,255,0.2)" transform="rotate(15,90,24)"/>
+    </svg>
+  `;
+
+  const bowPng = await sharp(Buffer.from(bowSvg))
+    .png()
+    .toBuffer();
+
+  // Find the top center of the heart for bow placement
+  // The heart's top dip is around y ~75-110 area, x centered around axis
+  const bowLeft = Math.round(axis - bowWidth / 2);
+  const bowTop = Math.round(h * 0.10); // Place at the heart's top dip, overlapping the lace
+
   const masterHeartPath = 'public/heart_lace_hd.png';
-  await sharp(out, { raw: { width: w, height: h, channels: 4 } })
+  await sharp(masterNobow)
+    .composite([{
+      input: bowPng,
+      left: bowLeft,
+      top: bowTop
+    }])
     .png({ compressionLevel: 9 })
     .toFile(masterHeartPath);
 
-  // Copy to heart_lace_user.png and cover/ paths
+  // Copy to other paths
   fs.copyFileSync(masterHeartPath, 'public/heart_lace_user.png');
+  
+  // Ensure cover directory exists
+  if (!fs.existsSync('public/cover')) {
+    fs.mkdirSync('public/cover', { recursive: true });
+  }
   fs.copyFileSync(masterHeartPath, 'public/cover/heart_lace.png');
   fs.copyFileSync(masterHeartPath, 'public/cover/heart_lace_clean.png');
   console.log('Saved public/heart_lace_hd.png, heart_lace_user.png, cover/heart_lace.png');
+
+  // Also copy to root for backward compatibility
+  fs.copyFileSync(masterHeartPath, 'heart_lace_hd.png');
+  fs.copyFileSync(masterHeartPath, 'heart_lace_user.png');
 
   // Square icons with generous padding and royal blue background (#0d2353)
   // 512x512
@@ -238,4 +304,3 @@ async function deployAllCleanAssets() {
 }
 
 deployAllCleanAssets();
-
