@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
-import confetti from 'canvas-confetti';
+import { burstOutlineHearts } from '../utils/heartBurst';
 
 export default function ScreenLanding({ onNext, config }) {
   const [photoError, setPhotoError] = useState(false);
 
-  const handleOpenGift = () => {
-    // Confetti burst - strictly NO PINK (shades of sky-blue, white, and gold only)
-    confetti({
-      particleCount: 65,
-      spread: 75,
-      origin: { y: 0.65 },
-      colors: ['#FFFFFF', '#93C5FD', '#60A5FA', '#3B82F6', '#D4AF37', '#F6E27A']
-    });
-    onNext();
+  const handleOpenGift = (e) => {
+    let originX = window.innerWidth / 2;
+    let originY = window.innerHeight * 0.65;
+    if (e && e.currentTarget) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      originX = rect.left + rect.width / 2;
+      originY = rect.top + rect.height / 2;
+    }
+
+    // Taburan love polos tanpa isi (hollow outline hearts burst)
+    burstOutlineHearts(originX, originY);
+
+    // Beri sedikit jeda agar letupan love terlihat indah sebelum berpindah
+    setTimeout(() => {
+      onNext();
+    }, 450);
   };
 
   return (
