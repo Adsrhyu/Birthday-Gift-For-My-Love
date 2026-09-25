@@ -41,10 +41,57 @@
     
     <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <script type="module" crossorigin src="./assets/index-DbIhT56I.js"></script>
+  <script type="module" crossorigin src="./assets/index-KtPkPSYE.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-DtGv-Z03.css">
 </head>
 <body>
+    <!-- 🎵 Instant Auto-Play Audio (Starts immediately upon clicking/entering web) -->
+    <audio id="birthday-audio" src="./birthday_sound.mp3" autoplay playsinline loop preload="auto" style="display:none;"></audio>
+    <script>
+      (function() {
+        var audio = document.getElementById('birthday-audio');
+        if (!audio) return;
+        audio.volume = 0.85;
+
+        // 1. Immediate trigger right at HTML parse time
+        var startPlay = function() {
+          if (!audio) return;
+          var p = audio.play();
+          if (p !== undefined) {
+            p.catch(function(e) {
+              console.log('Autoplay waiting for initial touch:', e.message);
+            });
+          }
+        };
+
+        window.__playBirthdayMusic = startPlay;
+        window.__birthdayAudio = audio;
+
+        // Try playing immediately
+        startPlay();
+
+        // 2. Immediate unlock on ANY user touch / tap / click / scroll anywhere on the screen
+        var unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown', 'scroll', 'keydown'];
+        var unlockHandler = function() {
+          startPlay();
+          unlockEvents.forEach(function(evt) {
+            window.removeEventListener(evt, unlockHandler, true);
+            document.removeEventListener(evt, unlockHandler, true);
+          });
+        };
+
+        unlockEvents.forEach(function(evt) {
+          window.addEventListener(evt, unlockHandler, { once: true, capture: true, passive: true });
+          document.addEventListener(evt, unlockHandler, { once: true, capture: true, passive: true });
+        });
+
+        // 3. Prevent unsolicited Chrome PWA install banners
+        window.addEventListener('beforeinstallprompt', function(e) {
+          e.preventDefault();
+        });
+      })();
+    </script>
+
     <div id="root"></div>
 </body>
 </html>
