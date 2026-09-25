@@ -60,34 +60,58 @@ export default function ScreenLanding({ onNext, config }) {
           50% { transform: translateY(-6px) rotate(-19deg); }
         }
 
-        /* Paper Airplane flying around the Heart Frame and returning home */
-        @keyframes airplaneOrbitHeart {
-          0%, 14% {
-            transform: translate3d(0, 0, 0) rotate(338deg) scale(1);
+        /* Paper Airplane and Dashed Trail squadron flying smoothly around Heart Frame */
+        @keyframes airplaneOrbitSmooth {
+          0%, 8% {
+            transform: translate3d(0vw, 0vh, 0) rotate(342deg);
           }
-          19% {
-            transform: translate3d(14vw, -1.8vh, 0) rotate(352deg) scale(1.05);
+          14% {
+            transform: translate3d(14vw, -1.8vh, 0) rotate(352deg);
           }
-          30% {
-            transform: translate3d(36vw, -3vh, 0) rotate(376deg) scale(1.08);
+          20% {
+            transform: translate3d(28vw, -2.5vh, 0) rotate(368deg);
           }
-          43% {
-            transform: translate3d(60vw, 0vh, 0) rotate(408deg) scale(1.1);
+          26% {
+            transform: translate3d(45vw, -1.2vh, 0) rotate(390deg);
           }
-          56% {
-            transform: translate3d(79vw, 14vh, 0) rotate(465deg) scale(1.1);
+          32% {
+            transform: translate3d(62vw, 1.5vh, 0) rotate(420deg);
           }
-          69% {
-            transform: translate3d(60vw, 29vh, 0) rotate(535deg) scale(1.08);
+          39% {
+            transform: translate3d(79vw, 9vh, 0) rotate(465deg);
           }
-          80% {
-            transform: translate3d(36vw, 15vh, 0) rotate(600deg) scale(1.05);
+          44% {
+            transform: translate3d(83vw, 16vh, 0) rotate(495deg);
+          }
+          49% {
+            transform: translate3d(79vw, 24vh, 0) rotate(530deg);
+          }
+          54% {
+            transform: translate3d(62vw, 29vh, 0) rotate(565deg);
+          }
+          60% {
+            transform: translate3d(45vw, 24vh, 0) rotate(605deg);
+          }
+          65% {
+            transform: translate3d(41vw, 16vh, 0) rotate(635deg);
+          }
+          71% {
+            transform: translate3d(45vw, 9vh, 0) rotate(660deg);
+          }
+          76% {
+            transform: translate3d(48vw, 4vh, 0) rotate(675deg);
+          }
+          84% {
+            transform: translate3d(30vw, 0.5vh, 0) rotate(685deg);
           }
           91% {
-            transform: translate3d(10vw, 3vh, 0) rotate(665deg) scale(1.02);
+            transform: translate3d(12vw, -0.5vh, 0) rotate(695deg);
           }
-          97%, 100% {
-            transform: translate3d(0, 0, 0) rotate(698deg) scale(1);
+          96% {
+            transform: translate3d(2vw, 0vh, 0) rotate(701deg);
+          }
+          100% {
+            transform: translate3d(0vw, 0vh, 0) rotate(702deg);
           }
         }
 
@@ -249,7 +273,8 @@ export default function ScreenLanding({ onNext, config }) {
       </div>
 
       {/* ========================================================== */}
-      {/* 3. PAPER AIRPLANE FLYING AROUND THE LOVE FRAME & RETURNING */}
+      {/* 3. PAPER AIRPLANE & TRAIL SQUADRON ORBITING THE HEART FRAME */}
+      {/* Both the airplane and its dashed trail fly together smoothly */}
       {/* ========================================================== */}
       <div
         className="cover-airplane-container"
@@ -257,69 +282,73 @@ export default function ScreenLanding({ onNext, config }) {
           position: 'absolute',
           top: 'clamp(24px, 4.4vh, 48px)',
           left: 'clamp(20px, 6vw, 65px)',
-          zIndex: 22,
+          zIndex: 25,
           pointerEvents: 'none'
         }}
       >
-        {/* Base Static Trail on Denim Runway */}
-        <div style={{ position: 'absolute', top: 0, left: 0, display: 'flex', alignItems: 'center' }}>
-          <svg
-            width="120"
-            height="48"
-            viewBox="0 0 120 48"
-            fill="none"
-            style={{ marginLeft: '38px', marginTop: '10px', opacity: 0.9 }}
-          >
-            <path
-              d="M 6 24 C 30 42, 55 10, 85 24 C 102 32, 112 18, 118 24"
-              stroke="#FFFFFF"
-              strokeWidth="2.2"
-              strokeDasharray="4 4"
-            />
-          </svg>
-        </div>
-
-        {/* Soft Blue Floating Mini Heart on the Static Trail */}
-        <div style={{ position: 'absolute', top: '16px', left: '56px', opacity: 0.95 }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="#93C5FD">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
-        </div>
-
-        {/* Dynamic Flying Paper Airplane Unit that orbits around the Heart Frame */}
         <div
-          className="airplane-flying-unit"
+          className="airplane-squadron"
           style={{
             position: 'relative',
-            width: '46px',
-            height: '46px',
-            display: 'inline-block',
-            animation: 'airplaneOrbitHeart 8.8s cubic-bezier(0.42, 0, 0.58, 1) infinite',
-            transformOrigin: '23px 23px',
+            width: '165px',
+            height: '52px',
+            animation: 'airplaneOrbitSmooth 9.6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            transformOrigin: '135px 24px',
             willChange: 'transform'
           }}
         >
-          {/* Origami Airplane */}
+          {/* Garis Patah-patah (Dashed Flight Trail) tepat di BELAKANG Pesawat */}
           <svg
-            width="46"
+            width="118"
             height="46"
-            viewBox="0 0 64 64"
+            viewBox="0 0 118 46"
             fill="none"
             style={{
-              filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.55))'
+              position: 'absolute',
+              left: '0px',
+              top: '6px',
+              opacity: 0.95
             }}
           >
-            <path d="M6 32 L58 6 L36 58 L28 36 Z" fill="#FFFFFF" />
-            <path d="M28 36 L58 6 L36 58" fill="#E2E8F0" />
-            <path d="M28 36 L36 46 L40 36" fill="#CBD5E1" />
-            <line x1="28" y1="36" x2="58" y2="6" stroke="#94A3B8" strokeWidth="1.2" />
+            <path
+              d="M 6 23 C 32 39, 56 9, 86 23 C 98 29, 108 21, 116 25"
+              stroke="#FFFFFF"
+              strokeWidth="2.2"
+              strokeDasharray="4 4"
+              strokeLinecap="round"
+            />
           </svg>
 
-          {/* Accompanying Sweet Mini Heart Flying with Airplane */}
-          <div style={{ position: 'absolute', bottom: '-4px', left: '-2px' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#93C5FD" style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.4))' }}>
+          {/* Soft Blue Floating Heart di atas Garis Patah-patah */}
+          <div style={{ position: 'absolute', top: '1px', left: '48px', opacity: 0.95 }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#93C5FD" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.35))' }}>
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
+          </div>
+
+          {/* Pesawat Kertas Origami di DEPAN Memimpin Penerbangan */}
+          <div style={{ position: 'absolute', left: '112px', top: '2px' }}>
+            <svg
+              width="46"
+              height="46"
+              viewBox="0 0 64 64"
+              fill="none"
+              style={{
+                filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.55))'
+              }}
+            >
+              <path d="M6 32 L58 6 L36 58 L28 36 Z" fill="#FFFFFF" />
+              <path d="M28 36 L58 6 L36 58" fill="#E2E8F0" />
+              <path d="M28 36 L36 46 L40 36" fill="#CBD5E1" />
+              <line x1="28" y1="36" x2="58" y2="6" stroke="#94A3B8" strokeWidth="1.2" />
+            </svg>
+
+            {/* Hati Biru Kecil di Bawah Sayap Pesawat */}
+            <div style={{ position: 'absolute', bottom: '-4px', left: '-2px' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#93C5FD" style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.4))' }}>
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
